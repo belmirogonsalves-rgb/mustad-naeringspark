@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Vi bygger for deg — Skreddersydde lokaler i Gjøvik. Mustad Næringspark utvikler bygg tilpasset din virksomhet, fra behovsanalyse til nøkkel i hånden." />
+  <title>Vi bygger for deg — Skreddersydde lokaler | Mustad Næringspark</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Questrial&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+</head>
+<body>
+
+  <!-- Skip to content -->
+  <a class="skip-link" href="#main">Hopp til innhold</a>
+
+  <!-- =====================================================================
+       NAVIGATION
+       ===================================================================== -->
+  <nav class="nav" role="navigation" aria-label="Hovednavigasjon">
+    <div class="nav__inner">
+
+      <a href="index.html" class="nav__logo" aria-label="Mustad Næringspark — til forsiden">
+        <div class="nav__logo-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 21h18M3 7v1m0 4v1m0 4v1M21 7v1m0 4v1m0 4v1M6 21V3l6 4 6-4v18"/>
+          </svg>
+        </div>
+        <div class="nav__logo-text">
+          Mustad Næringspark
+          <span>Gjøvik · Innlandet</span>
+        </div>
+      </a>
+
+      <div class="nav__links" role="list">
+        <a href="eiendommer.html"     class="nav__link active" role="listitem">Eiendommer</a>
+        <a href="fasiliteter.html"    class="nav__link" role="listitem">Fasiliteter</a>
+        <a href="parkering.html"      class="nav__link" role="listitem">Parkering</a>
+        <a href="om-oss.html"         class="nav__link" role="listitem">Om Oss</a>
+        <a href="kontakt.html"        class="nav__link" role="listitem">Kontakt</a>
+        <a href="ledige-lokaler.html" class="nav__cta"  role="listitem">
+          Ledige Lokaler
+          <i data-lucide="arrow-right" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <button class="nav__hamburger" aria-label="Åpne meny" aria-expanded="false"
+              aria-controls="mobile-drawer">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="nav__drawer" id="mobile-drawer" role="dialog" aria-label="Mobilmeny">
+      <a href="eiendommer.html"     class="nav__link">Eiendommer</a>
+      <a href="fasiliteter.html"    class="nav__link">Fasiliteter</a>
+      <a href="parkering.html"      class="nav__link">Parkering</a>
+      <a href="om-oss.html"         class="nav__link">Om Oss</a>
+      <a href="kontakt.html"        class="nav__link">Kontakt</a>
+      <a href="ledige-lokaler.html" class="nav__cta">Ledige Lokaler →</a>
+    </div>
+  </nav>
+
+  <main id="main">
+
+    <!-- =================================================================
+         1. PAGE HERO
+         ================================================================= -->
+    <section class="page-hero" aria-label="Vi bygger for deg — skreddersydd utvikling">
+      <div class="page-hero__bg"
+           style="background-image: url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1920&auto=format&fit=crop&q=80');"
+           role="img" aria-label="Arkitektonisk byggeprosjekt — skreddersydde næringsbygg"></div>
+
+      <div class="page-hero__content">
+        <span class="hero__overline" style="margin-bottom:var(--space-lg);">Skreddersydd utvikling</span>
+        <h1 style="margin-bottom:var(--space-md);">Ditt bygg.<br><span style="color:var(--color-accent);">Dine regler.</span></h1>
+        <p class="lead" style="max-width:52ch;">
+          Mustad Næringspark utvikler og oppfører bygg skreddersydd for din virksomhet — fra første skisse til nøkkel i hånden.
+        </p>
+        <div style="display:flex; gap:var(--space-md); flex-wrap:wrap; margin-top:var(--space-2xl);">
+          <a href="#enquiry" class="btn btn--primary btn--lg">
+            Start samtalen
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+          </a>
+          <a href="#process" class="btn btn--secondary btn--lg">Se prosessen</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         2. HOW IT WORKS — 3-STEP PROCESS
+         ================================================================= -->
+    <section class="section bg-charcoal" id="process" aria-labelledby="process-heading"
+             style="background: var(--color-charcoal); border-top:1px solid var(--color-border); border-bottom:1px solid var(--color-border);">
+      <div class="container">
+
+        <header class="section-header section-header--center fade-in">
+          <span class="overline">Prosessen</span>
+          <h2 id="process-heading" style="color:var(--color-white);">Slik fungerer det</h2>
+          <p class="lead" style="color:rgba(255,255,255,0.55); margin-inline:auto;">
+            Tre tydelige steg fra idé til innflytting — vi holder deg trygt i hånden hele veien.
+          </p>
+        </header>
+
+        <div class="grid-3" data-stagger>
+
+          <!-- Step 1 -->
+          <div class="fade-in" style="text-align:center; padding:var(--space-2xl) var(--space-xl); background:var(--color-charcoal-2); border-radius:var(--radius-lg); border:1px solid var(--color-border); position:relative;">
+            <div style="font-family:var(--font-heading); font-size:clamp(3.5rem,6vw,5rem); font-weight:700; color:var(--color-accent); opacity:0.20; line-height:1; margin-bottom:var(--space-md); pointer-events:none; user-select:none;" aria-hidden="true">01</div>
+            <div style="width:64px; height:64px; background:var(--color-accent-dim); border-radius:var(--radius-md); display:flex; align-items:center; justify-content:center; margin:0 auto var(--space-lg);">
+              <i data-lucide="compass" style="width:30px; height:30px; color:var(--color-accent);" aria-hidden="true"></i>
+            </div>
+            <h3 style="color:var(--color-white); margin-bottom:var(--space-md);">Behovsanalyse</h3>
+            <p style="color:rgba(255,255,255,0.55); font-size:var(--text-base); line-height:1.7; max-width:none;">
+              Vi starter med å forstå din virksomhet. Hva trenger dere nå — og om fem år?
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="fade-in fade-in-delay-1" style="text-align:center; padding:var(--space-2xl) var(--space-xl); background:var(--color-charcoal-2); border-radius:var(--radius-lg); border:1px solid var(--color-border); position:relative;">
+            <div style="font-family:var(--font-heading); font-size:clamp(3.5rem,6vw,5rem); font-weight:700; color:var(--color-accent); opacity:0.20; line-height:1; margin-bottom:var(--space-md); pointer-events:none; user-select:none;" aria-hidden="true">02</div>
+            <div style="width:64px; height:64px; background:var(--color-accent-dim); border-radius:var(--radius-md); display:flex; align-items:center; justify-content:center; margin:0 auto var(--space-lg);">
+              <i data-lucide="pencil-ruler" style="width:30px; height:30px; color:var(--color-accent);" aria-hidden="true"></i>
+            </div>
+            <h3 style="color:var(--color-white); margin-bottom:var(--space-md);">Prosjektering</h3>
+            <p style="color:rgba(255,255,255,0.55); font-size:var(--text-base); line-height:1.7; max-width:none;">
+              Arkitekter og rådgivere utarbeider et skreddersydd konsept tilpasset dine krav og budsjettrammer.
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="fade-in fade-in-delay-2" style="text-align:center; padding:var(--space-2xl) var(--space-xl); background:var(--color-charcoal-2); border-radius:var(--radius-lg); border:1px solid var(--color-border); position:relative;">
+            <div style="font-family:var(--font-heading); font-size:clamp(3.5rem,6vw,5rem); font-weight:700; color:var(--color-accent); opacity:0.20; line-height:1; margin-bottom:var(--space-md); pointer-events:none; user-select:none;" aria-hidden="true">03</div>
+            <div style="width:64px; height:64px; background:var(--color-accent-dim); border-radius:var(--radius-md); display:flex; align-items:center; justify-content:center; margin:0 auto var(--space-lg);">
+              <i data-lucide="building-2" style="width:30px; height:30px; color:var(--color-accent);" aria-hidden="true"></i>
+            </div>
+            <h3 style="color:var(--color-white); margin-bottom:var(--space-md);">Innflytting</h3>
+            <p style="color:rgba(255,255,255,0.55); font-size:var(--text-base); line-height:1.7; max-width:none;">
+              Vi leverer ferdigstilte lokaler klar for din virksomhet. Du fokuserer på kjernevirksomheten — vi tar resten.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         3. SPLIT ABOUT
+         ================================================================= -->
+    <section class="section bg-light" aria-labelledby="about-heading">
+      <div class="container">
+        <div class="split">
+
+          <!-- Text left -->
+          <div class="slide-in-left">
+            <span class="overline" style="display:block; margin-bottom:var(--space-sm);">Hvorfor bygge skreddersydd?</span>
+            <h2 id="about-heading" style="margin-bottom:var(--space-xl);">Lokaler som vokser<br>med virksomheten din</h2>
+            <p style="color:var(--color-muted); margin-bottom:var(--space-md);">
+              Et ferdigstilt bygg er sjelden perfekt. Et skreddersydd bygg er det. Mustad Næringspark har erfaring med å utvikle og tilpasse eiendommer for leietakere med spesifikke behov — fra planlegging til nøkkel i hånden.
+            </p>
+            <p style="color:var(--color-muted); margin-bottom:var(--space-2xl);">
+              Enten du trenger spesialtilpassede laboratorier, produksjons- og lagerlokaler, eller et representativt kontorbygg — vi har kompetansen og tomtene til å gjøre det mulig.
+            </p>
+            <a href="#enquiry" class="btn btn--primary">
+              Start samtalen
+              <i data-lucide="arrow-right" aria-hidden="true"></i>
+            </a>
+          </div>
+
+          <!-- Image right -->
+          <div class="split__visual slide-in-right">
+            <img
+              src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&auto=format&fit=crop&q=80"
+              alt="Arkitekt og byggherre diskuterer planløsning for skreddersydd næringsbygg"
+              loading="lazy"
+              width="800" height="533"
+              style="width:100%; height:100%; object-fit:cover; border-radius:var(--radius-lg); box-shadow:var(--shadow-lg);"
+            />
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         4. BENEFITS GRID
+         ================================================================= -->
+    <section class="section bg-white" aria-labelledby="benefits-heading">
+      <div class="container">
+
+        <header class="section-header section-header--center fade-in">
+          <span class="overline">Fordeler</span>
+          <h2 id="benefits-heading">Det får du med oss</h2>
+          <p class="lead">Vi kombinerer lokal kunnskap, lang erfaring og ekte engasjement for ditt prosjekt.</p>
+        </header>
+
+        <div class="grid-4" data-stagger>
+
+          <div class="amenity-tile fade-in">
+            <div class="amenity-tile__icon" aria-hidden="true">
+              <i data-lucide="layout-template"></i>
+            </div>
+            <h3 class="amenity-tile__title">Skreddersydd planløsning</h3>
+            <p class="amenity-tile__desc">Hvert kvm er tilpasset din virksomhets behov og arbeidsmåte — ingenting er standard.</p>
+          </div>
+
+          <div class="amenity-tile fade-in fade-in-delay-1">
+            <div class="amenity-tile__icon" aria-hidden="true">
+              <i data-lucide="trending-up"></i>
+            </div>
+            <h3 class="amenity-tile__title">Forutsigbare kostnader</h3>
+            <p class="amenity-tile__desc">Langsiktige leiekontrakter med forutsigbar kostnadsprofil — trygt for budsjettplanlegging.</p>
+          </div>
+
+          <div class="amenity-tile fade-in fade-in-delay-2">
+            <div class="amenity-tile__icon" aria-hidden="true">
+              <i data-lucide="award"></i>
+            </div>
+            <h3 class="amenity-tile__title">Erfaren utvikler</h3>
+            <p class="amenity-tile__desc">Vi har gjort dette før — og vi gjør det bra. Vår portefølje taler for seg selv.</p>
+          </div>
+
+          <div class="amenity-tile fade-in fade-in-delay-3">
+            <div class="amenity-tile__icon" aria-hidden="true">
+              <i data-lucide="grid-2x2"></i>
+            </div>
+            <h3 class="amenity-tile__title">Fellesfasiliteter</h3>
+            <p class="amenity-tile__desc">Mustadparkens kantiner, møterom og treningssenter er tilgjengelig for alle dine ansatte.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         5. ENQUIRY FORM
+         ================================================================= -->
+    <section class="section bg-light" id="enquiry" aria-labelledby="enquiry-heading">
+      <div class="container">
+
+        <header class="section-header fade-in">
+          <span class="overline">Kom i gang</span>
+          <h2 id="enquiry-heading">Fortell oss om ditt prosjekt</h2>
+          <p class="lead">Fyll ut skjemaet, så tar vi kontakt innen én arbeidsdag for en uforpliktende prat.</p>
+        </header>
+
+        <div class="split split--60-40" style="align-items:flex-start;">
+
+          <!-- Form left -->
+          <div class="slide-in-left">
+            <form
+              data-validate
+              novalidate
+              style="background:var(--color-white); padding:var(--space-2xl); border-radius:var(--radius-xl); box-shadow:var(--shadow-lg);"
+              aria-label="Henvendelsesskjema for skreddersydd bygg"
+            >
+
+              <div class="grid-2" style="gap:var(--space-md);">
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="form-label" for="company">
+                    Virksomhetsnavn <span aria-hidden="true" style="color:var(--color-accent);">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="company"
+                    name="company"
+                    class="form-input"
+                    placeholder="Eksempel AS"
+                    required
+                    autocomplete="organization"
+                  />
+                </div>
+
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="form-label" for="contact-name">
+                    Kontaktperson <span aria-hidden="true" style="color:var(--color-accent);">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="contact-name"
+                    name="contact-name"
+                    class="form-input"
+                    placeholder="Ola Nordmann"
+                    required
+                    autocomplete="name"
+                  />
+                </div>
+              </div>
+
+              <div class="grid-2" style="gap:var(--space-md); margin-top:var(--space-md);">
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="form-label" for="email">
+                    E-post <span aria-hidden="true" style="color:var(--color-accent);">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    class="form-input"
+                    placeholder="ola@eksempel.no"
+                    required
+                    autocomplete="email"
+                  />
+                </div>
+
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="form-label" for="phone">Telefon</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    class="form-input"
+                    placeholder="+47 000 00 000"
+                    autocomplete="tel"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-top:var(--space-md);">
+                <label class="form-label" for="area">Ønsket areal</label>
+                <select id="area" name="area" class="form-select"
+                        style="appearance:none; background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a7a7a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\"); background-repeat:no-repeat; background-position:right 16px center; padding-right:40px;">
+                  <option value="" disabled selected>Velg omtrentlig areal</option>
+                  <option value="under-500">Under 500 kvm</option>
+                  <option value="500-2000">500–2 000 kvm</option>
+                  <option value="2000-5000">2 000–5 000 kvm</option>
+                  <option value="5000+">5 000+ kvm</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="description">Beskriv behovet</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  class="form-textarea"
+                  placeholder="Beskriv virksomhetens behov, ønsket beliggenhet, eventuelle spesielle krav til lokalene og planlagt innflyttingstidspunkt..."
+                  rows="5"
+                ></textarea>
+              </div>
+
+              <button type="submit" class="btn btn--primary" style="width:100%; justify-content:center; padding:var(--space-lg) var(--space-xl);">
+                Send inn henvendelse
+                <i data-lucide="send" aria-hidden="true"></i>
+              </button>
+
+              <p style="font-size:var(--text-xs); color:var(--color-muted); margin-top:var(--space-md); text-align:center; max-width:none;">
+                Vi svarer innen én arbeidsdag. Ingen forpliktelser.
+              </p>
+
+            </form>
+          </div>
+
+          <!-- Right side text + contact card -->
+          <div class="slide-in-right" style="display:flex; flex-direction:column; gap:var(--space-xl); padding-top:var(--space-sm);">
+
+            <!-- Why Mustad text -->
+            <div>
+              <span class="overline" style="display:block; margin-bottom:var(--space-sm);">Hvorfor Mustad?</span>
+              <h3 style="margin-bottom:var(--space-lg);">Vi kjenner Gjøvik</h3>
+              <p style="color:var(--color-muted); margin-bottom:var(--space-lg);">
+                Med røtter tilbake til 1832 og en tomteportefølje i hjertet av Gjøvik er vi den naturlige partneren for virksomheter som vil vokse i Innlandet.
+              </p>
+              <p style="color:var(--color-muted);">
+                Vi kombinerer lokal ekspertise med profesjonell eiendomsutvikling — og vi er genuint opptatt av at ditt prosjekt skal lykkes.
+              </p>
+            </div>
+
+            <!-- Key credentials -->
+            <div style="display:flex; flex-direction:column; gap:var(--space-md);">
+              <div style="display:flex; align-items:center; gap:var(--space-md);">
+                <div style="width:48px; height:48px; background:var(--color-accent-dim); border-radius:var(--radius-md); display:flex; align-items:center; justify-content:center; flex-shrink:0;" aria-hidden="true">
+                  <i data-lucide="calendar" style="width:22px; height:22px; color:var(--color-accent);"></i>
+                </div>
+                <div>
+                  <p style="font-family:var(--font-heading); font-weight:700; font-size:var(--text-base); color:var(--color-text); margin-bottom:2px; max-width:none;">Siden 1832</p>
+                  <p style="font-size:var(--text-sm); color:var(--color-muted); max-width:none;">Industriarv og lokal forankring</p>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:var(--space-md);">
+                <div style="width:48px; height:48px; background:var(--color-accent-dim); border-radius:var(--radius-md); display:flex; align-items:center; justify-content:center; flex-shrink:0;" aria-hidden="true">
+                  <i data-lucide="building" style="width:22px; height:22px; color:var(--color-accent);"></i>
+                </div>
+                <div>
+                  <p style="font-family:var(--font-heading); font-weight:700; font-size:var(--text-base); color:var(--color-text); margin-bottom:2px; max-width:none;">90 000 kvm+</p>
+                  <p style="font-size:var(--text-sm); color:var(--color-muted); max-width:none;">Planlagt utbygging i porteføljen</p>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:var(--space-md);">
+                <div style="width:48px; height:48px; background:var(--color-accent-dim); border-radius:var(--radius-md); display:flex; align-items:center; justify-content:center; flex-shrink:0;" aria-hidden="true">
+                  <i data-lucide="users" style="width:22px; height:22px; color:var(--color-accent);"></i>
+                </div>
+                <div>
+                  <p style="font-family:var(--font-heading); font-weight:700; font-size:var(--text-base); color:var(--color-text); margin-bottom:2px; max-width:none;">30+ leietakere</p>
+                  <p style="font-size:var(--text-sm); color:var(--color-muted); max-width:none;">Fra store etater til innovative gründere</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contact card -->
+            <div style="background:var(--color-white); border:1px solid var(--color-border-light); border-radius:var(--radius-lg); padding:var(--space-xl); box-shadow:var(--shadow-sm);">
+              <p style="font-size:var(--text-xs); letter-spacing:0.12em; text-transform:uppercase; color:var(--color-accent); margin-bottom:var(--space-md); max-width:none;">Kontakt oss direkte</p>
+              <p style="font-family:var(--font-heading); font-weight:700; font-size:var(--text-lg); color:var(--color-text); margin-bottom:var(--space-md); max-width:none;">Mustad Næringspark</p>
+              <div style="display:flex; flex-direction:column; gap:var(--space-sm);">
+                <a href="tel:+4761000000"
+                   style="display:inline-flex; align-items:center; gap:var(--space-sm); font-size:var(--text-base); color:var(--color-muted); text-decoration:none; transition:color var(--transition-base);"
+                   onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='var(--color-muted)'">
+                  <i data-lucide="phone" style="width:16px; height:16px; color:var(--color-accent); flex-shrink:0;" aria-hidden="true"></i>
+                  +47 61 00 00 00
+                </a>
+                <a href="mailto:post@mustadnaeringspark.no"
+                   style="display:inline-flex; align-items:center; gap:var(--space-sm); font-size:var(--text-base); color:var(--color-muted); text-decoration:none; transition:color var(--transition-base);"
+                   onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='var(--color-muted)'">
+                  <i data-lucide="mail" style="width:16px; height:16px; color:var(--color-accent); flex-shrink:0;" aria-hidden="true"></i>
+                  post@mustadnaeringspark.no
+                </a>
+                <div style="display:inline-flex; align-items:center; gap:var(--space-sm); font-size:var(--text-base); color:var(--color-muted);">
+                  <i data-lucide="clock" style="width:16px; height:16px; color:var(--color-accent); flex-shrink:0;" aria-hidden="true"></i>
+                  Man–fre: 08:00–16:00
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         6. CTA BAND
+         ================================================================= -->
+    <section class="cta-band" aria-labelledby="cta-heading">
+      <div class="container">
+        <span class="overline" style="display:block; margin-bottom:var(--space-md);">Klar til å starte samtalen?</span>
+        <h2 id="cta-heading">La oss finne den perfekte løsningen for deg</h2>
+        <p style="max-width:52ch;">
+          Et skreddersydd bygg er en investering i fremtidig vekst. Ta første steg — vi er klare til å høre på deg.
+        </p>
+        <div class="cta-band__actions">
+          <a href="kontakt.html" class="btn btn--primary btn--lg">
+            Ta kontakt
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+          </a>
+          <a href="eiendommer.html" class="btn btn--secondary btn--lg">Se alle eiendommer</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================================
+       FOOTER
+       ===================================================================== -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__grid">
+
+        <!-- Brand col -->
+        <div class="footer__brand">
+          <div class="footer__logo">
+            <div class="footer__logo-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 21h18M3 7v1m0 4v1m0 4v1M21 7v1m0 4v1m0 4v1M6 21V3l6 4 6-4v18"/>
+              </svg>
+            </div>
+            <div class="footer__logo-text">
+              Mustad Næringspark
+              <span>Gjøvik · Innlandet</span>
+            </div>
+          </div>
+          <p class="footer__tagline">
+            Vi forvalter og utvikler spennende eiendommer i og rundt Gjøvik.
+          </p>
+          <div class="footer__social" role="list" aria-label="Sosiale medier">
+            <a href="#" class="footer__social-link" role="listitem" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+            </a>
+            <a href="#" class="footer__social-link" role="listitem" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+            <a href="#" class="footer__social-link" role="listitem" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick links col -->
+        <nav aria-label="Hurtiglenker">
+          <p class="footer__col-title">Navigasjon</p>
+          <ul class="footer__links">
+            <li><a href="eiendommer.html"      class="footer__link">Eiendommer</a></li>
+            <li><a href="ledige-lokaler.html"  class="footer__link">Ledige Lokaler</a></li>
+            <li><a href="fasiliteter.html"     class="footer__link">Fasiliteter</a></li>
+            <li><a href="parkering.html"       class="footer__link">Parkering</a></li>
+            <li><a href="om-oss.html"          class="footer__link">Om Oss</a></li>
+            <li><a href="nyheter.html"         class="footer__link">Nyheter</a></li>
+            <li><a href="kontakt.html"         class="footer__link">Kontakt</a></li>
+          </ul>
+        </nav>
+
+        <!-- Contact col -->
+        <div>
+          <p class="footer__col-title">Kontakt</p>
+          <address style="font-style:normal;">
+            <div class="footer__contact-item">
+              <i data-lucide="map-pin" aria-hidden="true"></i>
+              <p>Huntonstranda 28<br>2815 Gjøvik</p>
+            </div>
+            <div class="footer__contact-item">
+              <i data-lucide="phone" aria-hidden="true"></i>
+              <p><a href="tel:+4761000000">+47 61 00 00 00</a></p>
+            </div>
+            <div class="footer__contact-item">
+              <i data-lucide="mail" aria-hidden="true"></i>
+              <p><a href="mailto:post@mustadnaeringspark.no">post@mustadnaeringspark.no</a></p>
+            </div>
+            <div class="footer__contact-item">
+              <i data-lucide="clock" aria-hidden="true"></i>
+              <p>Man–fre: 08:00–16:00</p>
+            </div>
+          </address>
+        </div>
+
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="footer__bottom">
+        <p class="footer__legal">
+          © 2026 Mustad Næringspark AS · Org.nr. 812 345 678
+        </p>
+        <p class="footer__legal">
+          <a href="#">Personvern</a> · <a href="#">Informasjonskapsler</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>if (typeof lucide !== 'undefined') lucide.createIcons();</script>
+</body>
+</html>

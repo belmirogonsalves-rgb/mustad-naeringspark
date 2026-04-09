@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Nyheter og oppdateringer fra Mustad Næringspark — nye leietakere, ledige lokaler, arrangementer og utvikling i Gjøvik." />
+  <title>Nyheter — Mustad Næringspark</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Questrial&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+
+  <style>
+    /* -------------------------------------------------------
+       Nyheter page styles
+    ------------------------------------------------------- */
+
+    /* Filter tab bar */
+    .news-tabs {
+      position: sticky;
+      top: var(--nav-height);
+      z-index: 30;
+      background: var(--color-charcoal);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .news-tabs__inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--space-xl);
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .news-tabs__inner::-webkit-scrollbar { display: none; }
+
+    .news-tab {
+      flex-shrink: 0;
+      padding: var(--space-md) var(--space-md);
+      font-family: var(--font-heading);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--color-muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color var(--transition-base), border-color var(--transition-base);
+    }
+
+    .news-tab:hover { color: var(--color-light); }
+
+    .news-tab.active,
+    .news-tab[aria-pressed="true"] {
+      color: var(--color-accent);
+      border-bottom-color: var(--color-accent);
+    }
+
+    .news-count {
+      margin-left: auto;
+      flex-shrink: 0;
+      font-family: var(--font-heading);
+      font-size: 0.78rem;
+      color: var(--color-muted);
+      padding-left: var(--space-md);
+      white-space: nowrap;
+    }
+
+    /* News grid */
+    .news-section {
+      background: var(--color-dark);
+      padding: var(--space-xxl) 0;
+      min-height: 60vh;
+    }
+
+    .news-grid-wrap {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--space-xl);
+    }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-lg);
+    }
+
+    /* News card */
+    .news-card {
+      background: var(--color-charcoal);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+      cursor: pointer;
+    }
+
+    .news-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+      border-color: rgba(200,169,110,0.3);
+    }
+
+    .news-card__image {
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .news-card__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 600ms ease;
+    }
+
+    .news-card:hover .news-card__image img {
+      transform: scale(1.04);
+    }
+
+    .news-card__body {
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      flex: 1;
+    }
+
+    .news-card__meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    /* Category badges */
+    .news-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-family: var(--font-heading);
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .news-badge--event       { background: rgba(96,165,250,0.15);  color: #60a5fa; }
+    .news-badge--ledige      { background: rgba(200,169,110,0.15); color: var(--color-accent); }
+    .news-badge--leietaker   { background: rgba(167,139,250,0.15); color: #a78bfa; }
+    .news-badge--nyhet       { background: rgba(74,222,128,0.15);  color: #4ade80; }
+    .news-badge--prosjekt    { background: rgba(251,146,60,0.15);  color: #fb923c; }
+    .news-badge--kantine     { background: rgba(251,191,36,0.15);  color: #fbbf24; }
+    .news-badge--fasiliteter { background: rgba(99,102,241,0.15);  color: #818cf8; }
+    .news-badge--utvikling   { background: rgba(248,113,113,0.15); color: #f87171; }
+
+    .news-card__date {
+      font-size: 0.78rem;
+      color: var(--color-muted);
+    }
+
+    .news-card__title {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-white);
+      line-height: 1.35;
+      margin-top: 2px;
+    }
+
+    .news-card__excerpt {
+      font-size: 0.86rem;
+      color: var(--color-muted);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .news-card__link {
+      margin-top: var(--space-sm);
+      font-family: var(--font-heading);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--color-accent);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: gap var(--transition-base);
+    }
+
+    .news-card__link:hover { gap: 10px; }
+    .news-card__link i { width: 14px; height: 14px; }
+
+    /* No results state */
+    .news-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: var(--space-xxl);
+      color: var(--color-muted);
+      display: none;
+    }
+
+    .news-empty i {
+      width: 48px;
+      height: 48px;
+      color: rgba(255,255,255,0.1);
+      margin-bottom: var(--space-md);
+    }
+
+    .news-empty p {
+      font-size: 0.95rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .news-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .news-grid { grid-template-columns: 1fr; }
+      .news-grid-wrap { padding: 0 var(--space-md); }
+      .news-tabs__inner { padding: 0 var(--space-md); }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Hopp til innhold</a>
+
+  <!-- =====================================================================
+       NAVIGATION
+       ===================================================================== -->
+  <nav class="nav" role="navigation" aria-label="Hovednavigasjon">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo" aria-label="Mustad Næringspark — til forsiden">
+        <div class="nav__logo-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 21h18M3 7v1m0 4v1m0 4v1M21 7v1m0 4v1m0 4v1M6 21V3l6 4 6-4v18"/>
+          </svg>
+        </div>
+        <div class="nav__logo-text">
+          Mustad Næringspark
+          <span>Gjøvik · Innlandet</span>
+        </div>
+      </a>
+
+      <div class="nav__links" role="list">
+        <a href="eiendommer.html"     class="nav__link" role="listitem">Eiendommer</a>
+        <a href="fasiliteter.html"    class="nav__link" role="listitem">Fasiliteter</a>
+        <a href="parkering.html"      class="nav__link" role="listitem">Parkering</a>
+        <a href="om-oss.html"         class="nav__link" role="listitem">Om Oss</a>
+        <a href="kontakt.html"        class="nav__link" role="listitem">Kontakt</a>
+        <a href="ledige-lokaler.html" class="nav__cta"  role="listitem">
+          Ledige Lokaler
+          <i data-lucide="arrow-right" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <button class="nav__hamburger" aria-label="Åpne meny" aria-expanded="false"
+              aria-controls="mobile-drawer">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div class="nav__drawer" id="mobile-drawer" role="dialog" aria-label="Mobilmeny">
+      <a href="eiendommer.html"     class="nav__link">Eiendommer</a>
+      <a href="fasiliteter.html"    class="nav__link">Fasiliteter</a>
+      <a href="parkering.html"      class="nav__link">Parkering</a>
+      <a href="om-oss.html"         class="nav__link">Om Oss</a>
+      <a href="kontakt.html"        class="nav__link">Kontakt</a>
+      <a href="ledige-lokaler.html" class="nav__cta">Ledige Lokaler &rarr;</a>
+    </div>
+  </nav>
+
+  <main id="main">
+
+    <!-- =================================================================
+         HERO
+         ================================================================= -->
+    <section class="hero hero--short" aria-label="Nyheter fra Mustad Næringspark">
+      <div class="hero__bg"
+           style="background-image: url('https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1920&auto=format&fit=crop&q=80');"
+           role="img" aria-label="Mustad Næringspark fasade"></div>
+      <div class="hero__overlay"></div>
+      <div class="hero__content">
+        <div class="hero__eyebrow fade-in">
+          <i data-lucide="newspaper" aria-hidden="true"></i>
+          Nyheter &amp; oppdateringer
+        </div>
+        <h1 class="hero__title fade-in" style="animation-delay:0.1s">
+          Siste nytt fra<br>Mustad Næringspark
+        </h1>
+        <p class="hero__subtitle fade-in" style="animation-delay:0.2s">
+          Hold deg oppdatert på nye leietakere, ledige lokaler, arrangementer
+          og spennende utvikling i Gjøviks fremste næringspark.
+        </p>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         FILTER TABS
+         ================================================================= -->
+    <nav class="news-tabs" aria-label="Filtrer nyheter etter kategori">
+      <div class="news-tabs__inner">
+        <button class="news-tab active" data-cat="alle" aria-pressed="true">Alle</button>
+        <button class="news-tab" data-cat="event" aria-pressed="false">Event</button>
+        <button class="news-tab" data-cat="ledige" aria-pressed="false">Ledige lokaler</button>
+        <button class="news-tab" data-cat="leietaker" aria-pressed="false">Leietaker</button>
+        <button class="news-tab" data-cat="nyhet" aria-pressed="false">Nyhet</button>
+        <button class="news-tab" data-cat="prosjekt" aria-pressed="false">Prosjekt</button>
+        <button class="news-tab" data-cat="kantine" aria-pressed="false">Kantine</button>
+        <button class="news-tab" data-cat="fasiliteter" aria-pressed="false">Fasiliteter</button>
+        <button class="news-tab" data-cat="utvikling" aria-pressed="false">Utvikling</button>
+        <span class="news-count" id="news-count" aria-live="polite">43 artikler</span>
+      </div>
+    </nav>
+
+    <!-- =================================================================
+         NEWS GRID
+         ================================================================= -->
+    <section class="news-section" aria-labelledby="news-grid-label">
+      <div class="news-grid-wrap">
+        <h2 id="news-grid-label" class="sr-only">Nyhetsoversikt</h2>
+
+        <div class="news-grid fade-in" id="news-grid" role="list">
+
+          <!-- 1 -->
+          <article class="news-card" role="listitem" data-category="event">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&auto=format&fit=crop&q=70"
+                   alt="Fullt hus på Kvinnedagen 2026" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--event">Event</span>
+                <span class="news-card__date">09. mars 2026</span>
+              </div>
+              <h3 class="news-card__title">Fullt hus kvinnedagen 2026</h3>
+              <p class="news-card__excerpt">Fredag 6. mars samlet vi ansatte og leietakere til en inspirerende markering av kvinnedagen. Tre sterke kvinner delte sine erfaringer om ambisjoner og karrierevei.</p>
+              <a href="#" class="news-card__link" aria-label="Les mer om Fullt hus kvinnedagen 2026">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 2 -->
+          <article class="news-card" role="listitem" data-category="ledige">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=600&auto=format&fit=crop&q=70"
+                   alt="Kontorlokaler i Mustad Næringspark" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--ledige">Ledige lokaler</span>
+                <span class="news-card__date">28. januar 2026</span>
+              </div>
+              <h3 class="news-card__title">Trivelig og funksjonelle kontorlokaler</h3>
+              <p class="news-card__excerpt">Moderne kontorlokaler med god og gjennomtenkt planløsning. 600 kvm ledig fra juli 2026. Inkluderer tilgang til to kantiner, treningssenter og gratis parkering.</p>
+              <a href="ledige-lokaler.html" class="news-card__link">Se lokalet <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 3 -->
+          <article class="news-card" role="listitem" data-category="ledige">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&auto=format&fit=crop&q=70"
+                   alt="Lyse kontorlokaler i Bright House" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--ledige">Ledige lokaler</span>
+                <span class="news-card__date">27. januar 2026</span>
+              </div>
+              <h3 class="news-card__title">Lyse og fine kontorlokaler</h3>
+              <p class="news-card__excerpt">130 kvm med 4 cellekontorer og stort møterom i Bright House. Lyse og fine lokaler med tilgang til kantine, treningssenter og gratis parkering. Ledig vår 2026.</p>
+              <a href="ledige-lokaler.html" class="news-card__link">Se lokalet <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 4 -->
+          <article class="news-card" role="listitem" data-category="nyhet">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&auto=format&fit=crop&q=70"
+                   alt="Mustad Næringspark fasade" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--nyhet">Nyhet</span>
+                <span class="news-card__date">08. august 2025</span>
+              </div>
+              <h3 class="news-card__title">Siste nytt</h3>
+              <p class="news-card__excerpt">Oppdateringer fra Mustad Næringspark sommeren 2025. Ny reguleringsplan, nye leietakere og spennende utviklingsplaner for fremtiden av parken.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 5 -->
+          <article class="news-card" role="listitem" data-category="ledige">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&auto=format&fit=crop&q=70"
+                   alt="Bright House kontorbygg" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--ledige">Ledige lokaler</span>
+                <span class="news-card__date">02. juli 2025</span>
+              </div>
+              <h3 class="news-card__title">Bright House, ledig lokale, 316 kvm</h3>
+              <p class="news-card__excerpt">Er du på jakt etter funksjonelle og fleksible lokaler i et attraktivt næringsmiljø? 316 kvm på Plan U i Bright House er nå tilgjengelig.</p>
+              <a href="ledige-lokaler.html" class="news-card__link">Se lokalet <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 6 -->
+          <article class="news-card" role="listitem" data-category="ledige">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1571624436279-b272aff752b5?w=600&auto=format&fit=crop&q=70"
+                   alt="Støperiet — historisk industribygg i Gjøvik sentrum" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--ledige">Ledige lokaler</span>
+                <span class="news-card__date">15. mai 2025</span>
+              </div>
+              <h3 class="news-card__title">Støperiet, ledig lokale i Gjøvik sentrum</h3>
+              <p class="news-card__excerpt">Ca. 1 800 m² over to etasjer i Støperiet. Sentralt i Gjøvik, nær Gjøvik Gård. Heis, fjernvarme og gangavstand til kollektivtransport.</p>
+              <a href="eiendom-stoperiet.html" class="news-card__link">Se lokalet <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 7 -->
+          <article class="news-card" role="listitem" data-category="ledige">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=600&auto=format&fit=crop&q=70"
+                   alt="Moderne kontorlokaler" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--ledige">Ledige lokaler</span>
+                <span class="news-card__date">13. mai 2025</span>
+              </div>
+              <h3 class="news-card__title">Bright House, ledig kontorlokale</h3>
+              <p class="news-card__excerpt">Lyse, moderne lokaler på 239 kvm i Bright House. Fleksibel planløsning tilpasset din virksomhet. Tilgjengelig fra 01.01.2026.</p>
+              <a href="ledige-lokaler.html" class="news-card__link">Se lokalet <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 8 -->
+          <article class="news-card" role="listitem" data-category="ledige">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600&auto=format&fit=crop&q=70"
+                   alt="Cellekontor i Bright House" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--ledige">Ledige lokaler</span>
+                <span class="news-card__date">11. mai 2025</span>
+              </div>
+              <h3 class="news-card__title">Bright House, ledig cellekontor</h3>
+              <p class="news-card__excerpt">Eget låsbart kontor fra kr. 6 400,- per mnd. 24/7 tilgang, ubegrenset møteromsbooking og gratis parkering. Ledig omgående.</p>
+              <a href="ledige-lokaler.html" class="news-card__link">Se lokalet <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 9 -->
+          <article class="news-card" role="listitem" data-category="ledige">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?w=600&auto=format&fit=crop&q=70"
+                   alt="Lagerlokale i Mustad Næringspark" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--ledige">Ledige lokaler</span>
+                <span class="news-card__date">09. mai 2025</span>
+              </div>
+              <h3 class="news-card__title">Lagerlokale sentralt i Mustad Næringspark</h3>
+              <p class="news-card__excerpt">Attraktivt lagerlokale ledig omgående, sentralt plassert i Mustad Næringspark. Passer for virksomheter med logistikkbehov.</p>
+              <a href="ledige-lokaler.html" class="news-card__link">Se lokalet <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 10 -->
+          <article class="news-card" role="listitem" data-category="ledige">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?w=600&auto=format&fit=crop&q=70"
+                   alt="Lagerlokale i Åmodt, Hunndalen" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--ledige">Ledige lokaler</span>
+                <span class="news-card__date">08. mai 2025</span>
+              </div>
+              <h3 class="news-card__title">Lagerlokale til leie i Åmodt, Hunndalen</h3>
+              <p class="news-card__excerpt">Praktisk og oppvarmet lagerlokale på 155 kvm. Sentralt i Hunndalen nær riksvei 4. God adkomst og gode logistikkforhold.</p>
+              <a href="eiendom-aamodt.html" class="news-card__link">Se lokalet <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 11 -->
+          <article class="news-card" role="listitem" data-category="event">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1529651737248-dad5e287768e?w=600&auto=format&fit=crop&q=70"
+                   alt="Grand Opening av MustadPlay" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--event">Event</span>
+                <span class="news-card__date">25. april 2025</span>
+              </div>
+              <h3 class="news-card__title">Grand Opening av MustadPlay</h3>
+              <p class="news-card__excerpt">Dette er stedet for deg som trenger en aktiv pause. MustadPlay er nå offisielt åpnet — en ny rekreasjons- og aktivitetssone midt i næringsparken.</p>
+              <a href="fasiliteter.html#mustadplay" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 12 -->
+          <article class="news-card" role="listitem" data-category="leietaker">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&auto=format&fit=crop&q=70"
+                   alt="Sykehuspartner HF i Mustad Næringspark" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--leietaker">Leietaker</span>
+                <span class="news-card__date">09. april 2025</span>
+              </div>
+              <h3 class="news-card__title">Sykehuspartner HF — God beliggenhet var avgjørende</h3>
+              <p class="news-card__excerpt">God beliggenhet var avgjørende. Sykehuspartner HF forteller hvordan de fant sine ideelle lokaler i Mustad Næringspark.</p>
+              <a href="#" class="news-card__link">Les historien <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 13 -->
+          <article class="news-card" role="listitem" data-category="leietaker">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=600&auto=format&fit=crop&q=70"
+                   alt="Statens vegvesen i Mustad Næringspark" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--leietaker">Leietaker</span>
+                <span class="news-card__date">07. april 2025</span>
+              </div>
+              <h3 class="news-card__title">Statens vegvesen — God atmosfære og fleksible løsninger</h3>
+              <p class="news-card__excerpt">Statens vegvesen flyttet inn i oppgraderte lokaler i 2022. Vi snakket med dem om hva som gjør Mustad Næringspark til et godt sted å jobbe.</p>
+              <a href="#" class="news-card__link">Les historien <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 14 -->
+          <article class="news-card" role="listitem" data-category="leietaker">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600&auto=format&fit=crop&q=70"
+                   alt="Sweco — bærekraftig oppgradering" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--leietaker">Leietaker</span>
+                <span class="news-card__date">07. april 2025</span>
+              </div>
+              <h3 class="news-card__title">Sweco — Bærekraftig oppgradering i eksisterende lokaler</h3>
+              <p class="news-card__excerpt">Som tiårig leietaker valgte Sweco å bli — og bruke fornyelsen til å gjøre lokalene mer bærekraftige.</p>
+              <a href="#" class="news-card__link">Les historien <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 15 -->
+          <article class="news-card" role="listitem" data-category="nyhet">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&auto=format&fit=crop&q=70"
+                   alt="Ny reguleringsplan for Mustad Næringspark vedtatt" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--nyhet">Nyhet</span>
+                <span class="news-card__date">04. mars 2025</span>
+              </div>
+              <h3 class="news-card__title">Nå kan vi feire!</h3>
+              <p class="news-card__excerpt">Etter 14 år med planlegging er den nye reguleringsplanen endelig vedtatt. Dette åpner for 90 000 kvm ny utbygging — en historisk milepæl for parken.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 16 -->
+          <article class="news-card" role="listitem" data-category="prosjekt">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=70"
+                   alt="Vaktmesterboligen rehabiliteres" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--prosjekt">Prosjekt</span>
+                <span class="news-card__date">10. februar 2025</span>
+              </div>
+              <h3 class="news-card__title">"Vaktmesterboligen"</h3>
+              <p class="news-card__excerpt">Rehabilitering av Vaktmesterboligen er i gang. Et historisk bygg i parken får nytt liv med respekt for arkitektonisk arv og moderne bruksbehov.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 17 -->
+          <article class="news-card" role="listitem" data-category="utvikling">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&auto=format&fit=crop&q=70"
+                   alt="Fremtidsplaner for Mustad Næringspark" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--utvikling">Utvikling</span>
+                <span class="news-card__date">14. oktober 2024</span>
+              </div>
+              <h3 class="news-card__title">Fremtidens Mustad er under planlegging</h3>
+              <p class="news-card__excerpt">Ambisiøse planer for videre utvikling av Mustad Næringspark. Se hva vi jobber med og hva parken vil tilby i årene som kommer.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 18 -->
+          <article class="news-card" role="listitem" data-category="event">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1501286353178-1ec881214838?w=600&auto=format&fit=crop&q=70"
+                   alt="Mustad Sommerfestival 2024 i Borggården" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--event">Event</span>
+                <span class="news-card__date">20. september 2024</span>
+              </div>
+              <h3 class="news-card__title">Mustad Sommerfestival 2024!</h3>
+              <p class="news-card__excerpt">Sommerfestivalen 2024 i Borggården var en strålende suksess. Leietakere, ansatte og samarbeidspartnere møttes til god mat, musikk og sosialt samvær.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 19 -->
+          <article class="news-card" role="listitem" data-category="event">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1501286353178-1ec881214838?w=600&auto=format&fit=crop&q=70"
+                   alt="Verdens sykkeldag markering" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--event">Event</span>
+                <span class="news-card__date">10. juni 2024</span>
+              </div>
+              <h3 class="news-card__title">Verdens sykkeldag</h3>
+              <p class="news-card__excerpt">Mustad Næringspark markerte Verdens sykkeldag 2024. Vi oppfordrer alle ansatte til å sykle til jobb — godt for helsa, godt for miljøet.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 20 -->
+          <article class="news-card" role="listitem" data-category="event">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&auto=format&fit=crop&q=70"
+                   alt="Avgangsutstilling NTNU Gjøvik" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--event">Event</span>
+                <span class="news-card__date">28. mai 2024</span>
+              </div>
+              <h3 class="news-card__title">Avgangsutstilling NTNU</h3>
+              <p class="news-card__excerpt">NTNU-studenter fra Gjøvik viste frem sine avgangsutstillinger i Mustad Næringspark. En flott arena for kunst, design og teknologi.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 21 -->
+          <article class="news-card" role="listitem" data-category="leietaker">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&auto=format&fit=crop&q=70"
+                   alt="Ny leietaker i Bright House 2024" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--leietaker">Leietaker</span>
+                <span class="news-card__date">13. februar 2024</span>
+              </div>
+              <h3 class="news-card__title">Ny leietager i Bright House</h3>
+              <p class="news-card__excerpt">Velkommen til en ny leietaker i Bright House! Vi er stolte av å vokse fellesskapet i Mustad Næringsparks mest moderne kontorbygg.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 22 -->
+          <article class="news-card" role="listitem" data-category="event">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&auto=format&fit=crop&q=70"
+                   alt="Mustad Open nettverksarrangement" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--event">Event</span>
+                <span class="news-card__date">13. februar 2024</span>
+              </div>
+              <h3 class="news-card__title">Mustad Open</h3>
+              <p class="news-card__excerpt">Mustad Open — et åpent arrangement for bedrifter og enkeltpersoner i og rundt Gjøvik. Nettverksbygging, faglig påfyll og god stemning.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 23 -->
+          <article class="news-card" role="listitem" data-category="kantine">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1567521464027-f127ff144326?w=600&auto=format&fit=crop&q=70"
+                   alt="Kafe Kroken nyåpning" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--kantine">Kantine</span>
+                <span class="news-card__date">13. februar 2024</span>
+              </div>
+              <h3 class="news-card__title">Nyåpning Kafe Kroken</h3>
+              <p class="news-card__excerpt">Kafe Kroken er åpnet! Parken har nå fått sin nye kantineperle med fersk mat, god kaffe og hyggelige omgivelser for alle leietakere.</p>
+              <a href="fasiliteter.html#kantine" class="news-card__link">Om kantinen <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 24 -->
+          <article class="news-card" role="listitem" data-category="leietaker">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&auto=format&fit=crop&q=70"
+                   alt="Protan ny leietaker" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--leietaker">Leietaker</span>
+                <span class="news-card__date">12. februar 2024</span>
+              </div>
+              <h3 class="news-card__title">Velkommen Protan</h3>
+              <p class="news-card__excerpt">Protan er ny leietaker i Mustad Næringspark. Velkommen til et aktivt og mangfoldig næringsmiljø i Gjøvik!</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 25 -->
+          <article class="news-card" role="listitem" data-category="leietaker">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=600&auto=format&fit=crop&q=70"
+                   alt="Svanen Service ny leietaker" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--leietaker">Leietaker</span>
+                <span class="news-card__date">02. mai 2024</span>
+              </div>
+              <h3 class="news-card__title">Velkommen Svanen Service</h3>
+              <p class="news-card__excerpt">Vi ønsker Svanen Service hjertelig velkommen som ny leietaker. De bidrar til bredden og mangfoldet i parken.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 26 -->
+          <article class="news-card" role="listitem" data-category="prosjekt">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=70"
+                   alt="Brusveen Gård rehabilitering" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--prosjekt">Prosjekt</span>
+                <span class="news-card__date">22. februar 2023</span>
+              </div>
+              <h3 class="news-card__title">Brusveen Gård i ny drakt</h3>
+              <p class="news-card__excerpt">Brusveen Gård gjennomgår en spennende transformasjon. Et historisk gårdsbruk i næringsparken får et moderne løft med respekt for sin opprinnelse.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 27 -->
+          <article class="news-card" role="listitem" data-category="nyhet">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&auto=format&fit=crop&q=70"
+                   alt="Ny nettside for Mustad Næringspark" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--nyhet">Nyhet</span>
+                <span class="news-card__date">28. februar 2023</span>
+              </div>
+              <h3 class="news-card__title">Ny nettside</h3>
+              <p class="news-card__excerpt">Mustad Næringspark lanserer ny nettside med forbedret brukeropplevelse, oppdatert innhold og enklere tilgang til ledige lokaler.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 28 -->
+          <article class="news-card" role="listitem" data-category="leietaker">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&auto=format&fit=crop&q=70"
+                   alt="Ny leietaker i Bright House 2023" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--leietaker">Leietaker</span>
+                <span class="news-card__date">07. mars 2023</span>
+              </div>
+              <h3 class="news-card__title">Ny leietaker i Bright House</h3>
+              <p class="news-card__excerpt">Enda en ny leietaker i Bright House — næringsparken vokser og vi er glade for at stadig flere velger oss som sin base i Gjøvik.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 29 -->
+          <article class="news-card" role="listitem" data-category="nyhet">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=70"
+                   alt="Mustad Autoline jubileum" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--nyhet">Nyhet</span>
+                <span class="news-card__date">21. april 2023</span>
+              </div>
+              <h3 class="news-card__title">Gratulerer Mustad Autoline!</h3>
+              <p class="news-card__excerpt">Mustad Autoline fyller år og vi gratulerer med dagen. En stolt del av Mustad-arvens videreføring i Gjøvik.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 30 -->
+          <article class="news-card" role="listitem" data-category="event">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&auto=format&fit=crop&q=70"
+                   alt="Idékonkurranse Mustad Næringspark" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--event">Event</span>
+                <span class="news-card__date">26. april 2023</span>
+              </div>
+              <h3 class="news-card__title">Idékonkurranse</h3>
+              <p class="news-card__excerpt">Mustad Næringspark inviterte til idékonkurranse for studenter og unge gründere. Mange spennende bidrag og god stemning.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 31 -->
+          <article class="news-card" role="listitem" data-category="event">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1501286353178-1ec881214838?w=600&auto=format&fit=crop&q=70"
+                   alt="After Work i Borggården" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--event">Event</span>
+                <span class="news-card__date">05. mai 2023</span>
+              </div>
+              <h3 class="news-card__title">After Work</h3>
+              <p class="news-card__excerpt">After Work-arrangement i Borggården. Leietakere og ansatte møttes til mingling, lettere servering og nettverksbygging.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 32 -->
+          <article class="news-card" role="listitem" data-category="event">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&auto=format&fit=crop&q=70"
+                   alt="Utstilling avgangselever NTNU 2023" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--event">Event</span>
+                <span class="news-card__date">09. juni 2023</span>
+              </div>
+              <h3 class="news-card__title">Utstilling avgangselever NTNU</h3>
+              <p class="news-card__excerpt">Avgangselever fra NTNU i Gjøvik viste frem sine prosjekter i Mustad Næringspark. En flott mulighet til å oppleve fremtidens talent.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 33 -->
+          <article class="news-card" role="listitem" data-category="event">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=600&auto=format&fit=crop&q=70"
+                   alt="Åpen dag med stand og omvisning" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--event">Event</span>
+                <span class="news-card__date">19. juni 2023</span>
+              </div>
+              <h3 class="news-card__title">Stand og omvisning</h3>
+              <p class="news-card__excerpt">Åpen dag med stand og omvisning i Mustad Næringspark. Besøkende fikk se de moderne fasilitetene og snakke med leietakere.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 34 -->
+          <article class="news-card" role="listitem" data-category="ledige">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600&auto=format&fit=crop&q=70"
+                   alt="Kontorhotellet i Mustad Næringspark" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--ledige">Ledige lokaler</span>
+                <span class="news-card__date">07. juli 2023</span>
+              </div>
+              <h3 class="news-card__title">Kontorhotellet</h3>
+              <p class="news-card__excerpt">Fleksible kontorplasser i Mustad Næringsparks kontorhotell. Ideelt for frilansere, oppstartsbedrifter og bedrifter med varierende arealbehov.</p>
+              <a href="ledige-lokaler.html" class="news-card__link">Se ledige plasser <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 35 -->
+          <article class="news-card" role="listitem" data-category="event">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&auto=format&fit=crop&q=70"
+                   alt="Fadderuka NTNU studenter" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--event">Event</span>
+                <span class="news-card__date">18. august 2023</span>
+              </div>
+              <h3 class="news-card__title">Fadderuka</h3>
+              <p class="news-card__excerpt">Mustad Næringspark deltok under fadderuka for NTNU-studenter i Gjøvik. Vi ser frem til samarbeid med fremtidens arbeidstakere.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 36 -->
+          <article class="news-card" role="listitem" data-category="fasiliteter">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&auto=format&fit=crop&q=70"
+                   alt="Treningssenter i Mustad Næringspark" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--fasiliteter">Fasiliteter</span>
+                <span class="news-card__date">13. mars 2023</span>
+              </div>
+              <h3 class="news-card__title">Treningssenter</h3>
+              <p class="news-card__excerpt">Treningssenteret i Mustad Næringspark er et populært tilbud for alle ansatte. Her kan du ta en aktiv pause i løpet av arbeidsdagen.</p>
+              <a href="fasiliteter.html#treningssenter" class="news-card__link">Om treningssenteret <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 37 -->
+          <article class="news-card" role="listitem" data-category="kantine">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1567521464027-f127ff144326?w=600&auto=format&fit=crop&q=70"
+                   alt="Tasty Daily kantine" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--kantine">Kantine</span>
+                <span class="news-card__date">03. mars 2023</span>
+              </div>
+              <h3 class="news-card__title">Tasty Daily</h3>
+              <p class="news-card__excerpt">Kantinen Tasty Daily er et av parkens mestbrukte tilbud. Fersk mat, hyggelig atmosfære og variert meny — midt i hjertet av Mustad Næringspark.</p>
+              <a href="fasiliteter.html#kantine" class="news-card__link">Om kantinen <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 38 -->
+          <article class="news-card" role="listitem" data-category="leietaker">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&auto=format&fit=crop&q=70"
+                   alt="Leietakere i Mustad Næringspark" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--leietaker">Leietaker</span>
+                <span class="news-card__date">28. februar 2023</span>
+              </div>
+              <h3 class="news-card__title">Bli kjent med noen av våre leietakere</h3>
+              <p class="news-card__excerpt">Vi setter søkelys på noen av leietakerne i Mustad Næringspark. Se hvem som holder til her og hva som gjør parken til et godt sted å jobbe.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 39 -->
+          <article class="news-card" role="listitem" data-category="leietaker">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&auto=format&fit=crop&q=70"
+                   alt="SIT Trening Gjøvik åpner i Mustad" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--leietaker">Leietaker</span>
+                <span class="news-card__date">09. oktober 2023</span>
+              </div>
+              <h3 class="news-card__title">Velkommen SIT Trening Gjøvik</h3>
+              <p class="news-card__excerpt">SIT Trening Gjøvik er på plass i Mustad Næringspark. Treningssenteret er nå tilgjengelig for alle ansatte og leietakere i parken.</p>
+              <a href="fasiliteter.html#treningssenter" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 40 -->
+          <article class="news-card" role="listitem" data-category="leietaker">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=600&auto=format&fit=crop&q=70"
+                   alt="Ny leietaker november 2023" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--leietaker">Leietaker</span>
+                <span class="news-card__date">07. november 2023</span>
+              </div>
+              <h3 class="news-card__title">Ny leietager</h3>
+              <p class="news-card__excerpt">Nok en ny bedrift har valgt Mustad Næringspark som sin arbeidsplass. Parken vokser og vi ønsker alle hjertelig velkommen.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 41 -->
+          <article class="news-card" role="listitem" data-category="kantine">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1567521464027-f127ff144326?w=600&auto=format&fit=crop&q=70"
+                   alt="Sommertilbud kantine" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--kantine">Kantine</span>
+                <span class="news-card__date">30. juni 2022</span>
+              </div>
+              <h3 class="news-card__title">Endret kantinetilbud i sommer</h3>
+              <p class="news-card__excerpt">Kantinen har justert åpningstider og tilbud i sommerperioden. Se oppdatert informasjon om tilgjengelige matpauser i juli og august.</p>
+              <a href="fasiliteter.html#kantine" class="news-card__link">Om kantinen <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 42 -->
+          <article class="news-card" role="listitem" data-category="prosjekt">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&auto=format&fit=crop&q=70"
+                   alt="Vaktmesterboligen prosjekt" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--prosjekt">Prosjekt</span>
+                <span class="news-card__date">21. februar 2025</span>
+              </div>
+              <h3 class="news-card__title">Vaktmesterboligen</h3>
+              <p class="news-card__excerpt">Vaktmesterboligen er et historisk bygg i parken som nå rehabiliteres. Prosjektet kombinerer vern av kulturarv med moderne tilpasning.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- 43 -->
+          <article class="news-card" role="listitem" data-category="event">
+            <div class="news-card__image">
+              <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&auto=format&fit=crop&q=70"
+                   alt="Kvinnedagen markering 2024" loading="lazy" width="600" height="338" />
+            </div>
+            <div class="news-card__body">
+              <div class="news-card__meta">
+                <span class="news-badge news-badge--event">Event</span>
+                <span class="news-card__date">19. mars 2024</span>
+              </div>
+              <h3 class="news-card__title">Kvinnedagen 8. mars</h3>
+              <p class="news-card__excerpt">Mustad Næringspark markerte Kvinnedagen 8. mars med et arrangement for ansatte og leietakere i parken.</p>
+              <a href="#" class="news-card__link">Les mer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </article>
+
+          <!-- No results state -->
+          <div class="news-empty" id="news-empty" aria-live="polite">
+            <i data-lucide="inbox" aria-hidden="true"></i>
+            <p>Ingen artikler funnet i denne kategorien.</p>
+          </div>
+
+        </div><!-- /.news-grid -->
+      </div>
+    </section>
+
+    <!-- CTA Band -->
+    <section class="cta-band" aria-labelledby="news-cta">
+      <div class="cta-band__inner">
+        <div class="cta-band__content">
+          <h2 id="news-cta" class="cta-band__title">Ser du etter nye lokaler?</h2>
+          <p class="cta-band__text">Se alle ledige lokaler i Mustad Næringspark og finn din neste arbeidsplass i Gjøvik.</p>
+        </div>
+        <div class="cta-band__actions">
+          <a href="ledige-lokaler.html" class="btn btn--accent btn--lg">
+            Se ledige lokaler <i data-lucide="arrow-right" aria-hidden="true"></i>
+          </a>
+          <a href="kontakt.html" class="btn btn--outline btn--lg">Ta kontakt</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer__inner">
+      <div class="footer__col footer__col--brand">
+        <a href="index.html" class="footer__logo" aria-label="Mustad Næringspark — til forsiden">
+          <div class="nav__logo-mark" style="width:32px;height:32px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 21h18M3 7v1m0 4v1m0 4v1M21 7v1m0 4v1m0 4v1M6 21V3l6 4 6-4v18"/>
+            </svg>
+          </div>
+          <span>Mustad Næringspark</span>
+        </a>
+        <p class="footer__tagline">Vi forvalter og utvikler spennende eiendommer i og rundt Gjøvik. Et levende og pulserende sted med et mangfold av bedrifter.</p>
+        <div class="footer__social" aria-label="Sosiale medier">
+          <a href="#" class="footer__social-link" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </a>
+          <a href="#" class="footer__social-link" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h3 class="footer__heading">Hurtiglenker</h3>
+        <nav aria-label="Footer-navigasjon">
+          <ul class="footer__links">
+            <li><a href="eiendommer.html">Eiendommer</a></li>
+            <li><a href="ledige-lokaler.html">Ledige Lokaler</a></li>
+            <li><a href="fasiliteter.html">Fasiliteter</a></li>
+            <li><a href="parkering.html">Parkering</a></li>
+            <li><a href="om-oss.html">Om Oss</a></li>
+            <li><a href="nyheter.html">Nyheter</a></li>
+            <li><a href="kontakt.html">Kontakt</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer__col">
+        <h3 class="footer__heading">Kontakt oss</h3>
+        <address class="footer__contact">
+          <p><i data-lucide="map-pin" aria-hidden="true"></i> Huntonstranda 28<br>2815 Gjøvik</p>
+          <p><i data-lucide="mail" aria-hidden="true"></i> <a href="mailto:post@mustadnaeringspark.no">post@mustadnaeringspark.no</a></p>
+          <p><i data-lucide="building-2" aria-hidden="true"></i> Org.nr. 812 345 678</p>
+        </address>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>&copy; 2025 Mustad Næringspark AS. Alle rettigheter forbeholdt.</p>
+      <p><a href="personvern.html">Personvern</a> <span aria-hidden="true">·</span> <a href="kontakt.html">Kontakt</a></p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    /* --- News filter --------------------------------------------------- */
+    (function () {
+      var tabs  = Array.from(document.querySelectorAll('.news-tab'));
+      var cards = Array.from(document.querySelectorAll('.news-card'));
+      var empty = document.getElementById('news-empty');
+      var count = document.getElementById('news-count');
+
+      function filterNews(cat) {
+        var visible = 0;
+        cards.forEach(function (card) {
+          var show = cat === 'alle' || card.dataset.category === cat;
+          card.style.display = show ? '' : 'none';
+          if (show) visible++;
+        });
+        if (empty) empty.style.display = visible === 0 ? 'block' : 'none';
+        if (count) count.textContent = visible + (visible === 1 ? ' artikkel' : ' artikler');
+      }
+
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          var cat = this.dataset.cat;
+          tabs.forEach(function (t) {
+            t.classList.remove('active');
+            t.setAttribute('aria-pressed', 'false');
+          });
+          this.classList.add('active');
+          this.setAttribute('aria-pressed', 'true');
+          filterNews(cat);
+        });
+      });
+
+      // Init count
+      filterNews('alle');
+    }());
+  </script>
+
+</body>
+</html>

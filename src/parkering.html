@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Parkering i Mustad Næringspark, Gjøvik — sonenivåer, priser, EV-lading, Vipps, EasyPark og besøksregistrering." />
+  <title>Parkering — Mustad Næringspark</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Questrial&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+
+  <style>
+    /* -------------------------------------------------------
+       Page-specific: Parking
+    ------------------------------------------------------- */
+
+    /* Section wrapper */
+    .parking-section {
+      padding: var(--space-xxl) 0;
+    }
+
+    .parking-section--dark     { background: var(--color-dark); }
+    .parking-section--charcoal { background: var(--color-charcoal); }
+    .parking-section--light    { background: var(--color-light); }
+
+    .parking-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--space-xl);
+    }
+
+    /* Section header */
+    .section-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: var(--space-sm);
+    }
+
+    .section-kicker::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--color-accent);
+    }
+
+    /* -------------------------------------------------------
+       SVG Parking Map
+    ------------------------------------------------------- */
+    .map-wrapper {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #1a1f2e;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .map-legend {
+      display: flex;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-lg);
+    }
+
+    .map-legend__item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--color-muted);
+      font-family: var(--font-heading);
+      font-weight: 500;
+    }
+
+    .map-legend__dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    /* SVG zones — interactive */
+    .parking-zone {
+      cursor: pointer;
+      transition: opacity 200ms ease;
+    }
+
+    .parking-zone:hover { opacity: 0.85; }
+    .parking-zone:focus { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+
+    /* Tooltip */
+    .map-tooltip {
+      position: absolute;
+      background: var(--color-charcoal);
+      border: 1px solid var(--color-accent);
+      border-radius: 10px;
+      padding: var(--space-sm) var(--space-md);
+      min-width: 220px;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 200ms ease, transform 200ms ease;
+      z-index: 20;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    .map-tooltip.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .map-tooltip__title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--color-accent);
+      margin-bottom: 6px;
+    }
+
+    .map-tooltip__row {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      font-size: 0.82rem;
+      color: var(--color-muted);
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .map-tooltip__row:last-child { border-bottom: none; }
+
+    .map-tooltip__row strong {
+      color: var(--color-light);
+      font-weight: 500;
+    }
+
+    /* -------------------------------------------------------
+       Zone Info Cards
+    ------------------------------------------------------- */
+    .zone-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-md);
+    }
+
+    .zone-card {
+      background: var(--color-charcoal);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: var(--space-lg);
+      position: relative;
+      overflow: hidden;
+      transition: border-color var(--transition-base), transform var(--transition-base);
+    }
+
+    .zone-card:hover {
+      border-color: rgba(200,169,110,0.4);
+      transform: translateY(-3px);
+    }
+
+    .zone-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+
+    .zone-card--green::before  { background: #4ade80; }
+    .zone-card--yellow::before { background: #facc15; }
+    .zone-card--blue::before   { background: #60a5fa; }
+
+    .zone-card__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-family: var(--font-heading);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: var(--space-md);
+    }
+
+    .zone-card--green  .zone-card__badge { background: rgba(74,222,128,0.15); color: #4ade80; }
+    .zone-card--yellow .zone-card__badge { background: rgba(250,204,21,0.15);  color: #facc15; }
+    .zone-card--blue   .zone-card__badge { background: rgba(96,165,250,0.15);  color: #60a5fa; }
+
+    .zone-card__name {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--color-white);
+      margin-bottom: var(--space-xs);
+    }
+
+    .zone-card__users {
+      font-size: 0.85rem;
+      color: var(--color-muted);
+      margin-bottom: var(--space-md);
+      line-height: 1.5;
+    }
+
+    .zone-card__price-block {
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      padding: var(--space-sm) var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .zone-card__price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--space-sm);
+      padding: 5px 0;
+      font-size: 0.85rem;
+      color: var(--color-muted);
+    }
+
+    .zone-card__price-row + .zone-card__price-row {
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .zone-card__price-amount {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--color-accent);
+    }
+
+    .zone-card__note {
+      font-size: 0.8rem;
+      color: var(--color-muted);
+      line-height: 1.55;
+    }
+
+    /* -------------------------------------------------------
+       Payment Methods
+    ------------------------------------------------------- */
+    .payment-methods {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-md);
+    }
+
+    .payment-card {
+      background: var(--color-white);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 14px;
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: var(--space-sm);
+      transition: box-shadow var(--transition-base), border-color var(--transition-base);
+    }
+
+    .payment-card:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      border-color: var(--color-accent);
+    }
+
+    .payment-card__icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .payment-card__icon i {
+      width: 28px;
+      height: 28px;
+      color: var(--color-accent);
+    }
+
+    .payment-card__name {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .payment-card__desc {
+      font-size: 0.85rem;
+      color: #666;
+      line-height: 1.55;
+    }
+
+    /* Support info */
+    .support-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xl);
+      background: rgba(200,169,110,0.07);
+      border: 1px solid rgba(200,169,110,0.2);
+      border-radius: 12px;
+      padding: var(--space-md) var(--space-xl);
+      margin-top: var(--space-xl);
+      flex-wrap: wrap;
+    }
+
+    .support-bar__label {
+      font-family: var(--font-heading);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-accent);
+      margin-right: auto;
+    }
+
+    .support-bar__item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: var(--color-text);
+    }
+
+    .support-bar__item i {
+      width: 18px;
+      height: 18px;
+      color: var(--color-accent);
+    }
+
+    .support-bar__item a {
+      color: var(--color-text);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .support-bar__item a:hover {
+      color: var(--color-accent);
+    }
+
+    /* -------------------------------------------------------
+       Visitor Registration Form
+    ------------------------------------------------------- */
+    .reg-form-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-xxl);
+      align-items: start;
+    }
+
+    .reg-form__intro h2 {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      color: var(--color-white);
+      line-height: 1.2;
+      margin-bottom: var(--space-md);
+    }
+
+    .reg-form__intro p {
+      font-size: 1rem;
+      color: var(--color-muted);
+      line-height: 1.75;
+      margin-bottom: var(--space-md);
+    }
+
+    .reg-form__steps {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      margin-top: var(--space-lg);
+    }
+
+    .reg-step {
+      display: flex;
+      gap: var(--space-sm);
+      align-items: flex-start;
+    }
+
+    .reg-step__num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      color: var(--color-dark);
+      font-family: var(--font-heading);
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .reg-step__text {
+      font-size: 0.9rem;
+      color: var(--color-muted);
+      line-height: 1.55;
+      padding-top: 4px;
+    }
+
+    .reg-form__form {
+      background: var(--color-charcoal);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: var(--space-xl);
+    }
+
+    .reg-form__heading {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--color-white);
+      margin-bottom: var(--space-lg);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: var(--space-md);
+    }
+
+    .form-group label {
+      font-family: var(--font-heading);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-muted);
+    }
+
+    .form-group input,
+    .form-group select {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--color-white);
+      outline: none;
+      transition: border-color var(--transition-base), background var(--transition-base);
+    }
+
+    .form-group input::placeholder { color: rgba(255,255,255,0.25); }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--color-accent);
+      background: rgba(255,255,255,0.07);
+    }
+
+    .form-group select option {
+      background: var(--color-charcoal);
+      color: var(--color-white);
+    }
+
+    .form-disclaimer {
+      font-size: 0.8rem;
+      color: var(--color-muted);
+      line-height: 1.5;
+      margin-bottom: var(--space-md);
+    }
+
+    /* -------------------------------------------------------
+       Støperiet callout
+    ------------------------------------------------------- */
+    .stoperiet-callout {
+      background: var(--color-charcoal);
+      border: 1px solid rgba(200,169,110,0.25);
+      border-left: 4px solid var(--color-accent);
+      border-radius: 0 12px 12px 0;
+      padding: var(--space-md) var(--space-lg);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-md);
+      margin-top: var(--space-xl);
+    }
+
+    .stoperiet-callout i {
+      width: 22px;
+      height: 22px;
+      color: var(--color-accent);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .stoperiet-callout__text h4 {
+      font-family: var(--font-heading);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--color-white);
+      margin-bottom: 4px;
+    }
+
+    .stoperiet-callout__text p {
+      font-size: 0.85rem;
+      color: var(--color-muted);
+      line-height: 1.55;
+    }
+
+    .stoperiet-callout__text a {
+      color: var(--color-accent);
+      text-decoration: none;
+    }
+
+    .stoperiet-callout__text a:hover {
+      text-decoration: underline;
+    }
+
+    /* EV charging badge */
+    .ev-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(74,222,128,0.12);
+      border: 1px solid rgba(74,222,128,0.3);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 0.8rem;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      color: #4ade80;
+      margin-top: var(--space-sm);
+    }
+
+    .ev-badge i { width: 14px; height: 14px; }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .zone-cards { grid-template-columns: 1fr; }
+      .payment-methods { grid-template-columns: 1fr 1fr; }
+      .reg-form-wrapper { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .zone-cards { grid-template-columns: 1fr; }
+      .payment-methods { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .support-bar {
+        flex-direction: column;
+        gap: var(--space-md);
+        align-items: flex-start;
+      }
+      .support-bar__label { margin-right: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Skip to content -->
+  <a class="skip-link" href="#main">Hopp til innhold</a>
+
+  <!-- =====================================================================
+       NAVIGATION
+       ===================================================================== -->
+  <nav class="nav" role="navigation" aria-label="Hovednavigasjon">
+    <div class="nav__inner">
+
+      <a href="index.html" class="nav__logo" aria-label="Mustad Næringspark — til forsiden">
+        <div class="nav__logo-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 21h18M3 7v1m0 4v1m0 4v1M21 7v1m0 4v1m0 4v1M6 21V3l6 4 6-4v18"/>
+          </svg>
+        </div>
+        <div class="nav__logo-text">
+          Mustad Næringspark
+          <span>Gjøvik · Innlandet</span>
+        </div>
+      </a>
+
+      <div class="nav__links" role="list">
+        <a href="eiendommer.html"     class="nav__link" role="listitem">Eiendommer</a>
+        <a href="fasiliteter.html"    class="nav__link" role="listitem">Fasiliteter</a>
+        <a href="parkering.html"      class="nav__link active" role="listitem">Parkering</a>
+        <a href="om-oss.html"         class="nav__link" role="listitem">Om Oss</a>
+        <a href="kontakt.html"        class="nav__link" role="listitem">Kontakt</a>
+        <a href="ledige-lokaler.html" class="nav__cta"  role="listitem">
+          Ledige Lokaler
+          <i data-lucide="arrow-right" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <button class="nav__hamburger" aria-label="Åpne meny" aria-expanded="false"
+              aria-controls="mobile-drawer">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="nav__drawer" id="mobile-drawer" role="dialog" aria-label="Mobilmeny">
+      <a href="eiendommer.html"     class="nav__link">Eiendommer</a>
+      <a href="fasiliteter.html"    class="nav__link">Fasiliteter</a>
+      <a href="parkering.html"      class="nav__link active">Parkering</a>
+      <a href="om-oss.html"         class="nav__link">Om Oss</a>
+      <a href="kontakt.html"        class="nav__link">Kontakt</a>
+      <a href="ledige-lokaler.html" class="nav__cta">Ledige Lokaler &rarr;</a>
+    </div>
+  </nav>
+
+  <main id="main">
+
+    <!-- =================================================================
+         1. PAGE HERO
+         ================================================================= -->
+    <section class="hero hero--short" aria-label="Parkering i Mustad Næringspark">
+      <div class="hero__bg"
+           style="background-image: url('https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=1920&auto=format&fit=crop&q=80');"
+           role="img"
+           aria-label="Parkeringsanlegg i næringspark"></div>
+      <div class="hero__overlay"></div>
+
+      <div class="hero__content">
+        <div class="hero__eyebrow fade-in">
+          <i data-lucide="car" aria-hidden="true"></i>
+          Parkeringsinformasjon
+        </div>
+        <h1 class="hero__title fade-in" style="animation-delay:0.1s">
+          Parkering i<br>Mustad Næringspark
+        </h1>
+        <p class="hero__subtitle fade-in" style="animation-delay:0.2s">
+          Parken har flere hundre parkeringsplasser fordelt på ulike soner for
+          leietakere, besøkende og allmennheten. Her finner du alt du trenger å vite
+          om priser, regler og betaling.
+        </p>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         2. INTERACTIVE SVG PARKING MAP
+         ================================================================= -->
+    <section class="parking-section parking-section--dark" aria-labelledby="map-heading">
+      <div class="parking-inner">
+
+        <div style="max-width:680px;margin-bottom:var(--space-lg)" class="fade-in">
+          <div class="section-kicker">Parkeringskart</div>
+          <h2 id="map-heading" style="color:var(--color-white);font-size:clamp(1.8rem,3vw,2.4rem);margin-bottom:var(--space-sm)">
+            Oversikt over parkeringssoner
+          </h2>
+          <p style="color:var(--color-muted);line-height:1.7;font-size:0.95rem">
+            Klikk eller hold musepekeren over en sone for å se regler, priser og kapasitet.
+            Grønne soner er for registrerte leietakere, gule for besøkende og blå for sone 5.
+          </p>
+
+          <div class="map-legend" aria-label="Kartforklaring">
+            <div class="map-legend__item">
+              <div class="map-legend__dot" style="background:#4ade80" aria-hidden="true"></div>
+              Sone 2 — Leietakere
+            </div>
+            <div class="map-legend__item">
+              <div class="map-legend__dot" style="background:#facc15" aria-hidden="true"></div>
+              Sone 2 — Besøkende
+            </div>
+            <div class="map-legend__item">
+              <div class="map-legend__dot" style="background:#60a5fa" aria-hidden="true"></div>
+              Sone 5 — Alle
+            </div>
+            <div class="map-legend__item">
+              <div class="map-legend__dot" style="background:#34d399;border:2px solid #10b981" aria-hidden="true"></div>
+              EL-lading
+            </div>
+          </div>
+        </div>
+
+        <!-- SVG Parking Map -->
+        <div class="map-wrapper fade-in" style="position:relative">
+          <svg viewBox="0 0 800 480" xmlns="http://www.w3.org/2000/svg"
+               style="width:100%;height:auto;display:block"
+               role="img"
+               aria-label="Kart over parkeringssoner i Mustad Næringspark">
+
+            <!-- Background: park grounds -->
+            <rect width="800" height="480" fill="#1a1f2e"/>
+
+            <!-- Roads / paths -->
+            <rect x="0"   y="200" width="800" height="40" fill="#252b3b" rx="0"/>
+            <rect x="320" y="0"   width="40"  height="480" fill="#252b3b" rx="0"/>
+            <rect x="120" y="0"   width="30"  height="200" fill="#252b3b" rx="0"/>
+            <rect x="600" y="240" width="30"  height="240" fill="#252b3b" rx="0"/>
+
+            <!-- Road centre lines -->
+            <line x1="0" y1="220" x2="800" y2="220" stroke="#3a4055" stroke-width="1" stroke-dasharray="20,15"/>
+            <line x1="335" y1="0" x2="335" y2="480" stroke="#3a4055" stroke-width="1" stroke-dasharray="20,15"/>
+
+            <!-- ===================================================
+                 BUILDINGS
+                 =================================================== -->
+
+            <!-- Main building -->
+            <rect x="20" y="20" width="90" height="170" fill="#2d3448" rx="4" stroke="#3a4055" stroke-width="1"/>
+            <text x="65" y="95" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#6b7280">Mustad</text>
+            <text x="65" y="108" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#6b7280">Næringspark</text>
+
+            <!-- Bright House -->
+            <rect x="160" y="20" width="140" height="170" fill="#2d3448" rx="4" stroke="#3a4055" stroke-width="1"/>
+            <text x="230" y="100" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#6b7280">Bright House</text>
+
+            <!-- Support buildings -->
+            <rect x="380" y="20" width="200" height="80" fill="#2d3448" rx="4" stroke="#3a4055" stroke-width="1"/>
+            <text x="480" y="64" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#6b7280">Bygg A</text>
+
+            <rect x="380" y="120" width="90" height="70" fill="#2d3448" rx="4" stroke="#3a4055" stroke-width="1"/>
+            <text x="425" y="159" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#6b7280">Bygg B</text>
+
+            <rect x="600" y="20" width="160" height="170" fill="#2d3448" rx="4" stroke="#3a4055" stroke-width="1"/>
+            <text x="680" y="100" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#6b7280">Støperiet</text>
+
+            <!-- Lower buildings -->
+            <rect x="20" y="260" width="90" height="180" fill="#2d3448" rx="4" stroke="#3a4055" stroke-width="1"/>
+            <text x="65" y="353" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#6b7280">Bygg C</text>
+
+            <rect x="380" y="260" width="200" height="80" fill="#2d3448" rx="4" stroke="#3a4055" stroke-width="1"/>
+            <text x="480" y="303" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#6b7280">Bygg D</text>
+
+            <!-- ===================================================
+                 PARKING ZONES
+                 =================================================== -->
+
+            <!-- Zone 2 — Tenants (Green) — left side, between buildings -->
+            <g class="parking-zone" tabindex="0" role="button"
+               aria-label="Sone 2 Leietakere — gratis parkering"
+               data-zone="tenant"
+               data-title="Sone 2 — Leietakere"
+               data-regel="Gratis for registrerte leietakere"
+               data-pris="Gratis"
+               data-tid="Alle tider"
+               data-note="Ikke gyldig for studenter">
+              <rect x="120" y="20" width="30" height="170" fill="#4ade80" fill-opacity="0.35" rx="3"/>
+              <text x="135" y="108" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#4ade80" font-weight="bold" transform="rotate(-90,135,108)">LEIETAKERE</text>
+            </g>
+
+            <!-- Zone 2 — Visitors (Yellow) — front of main building -->
+            <g class="parking-zone" tabindex="0" role="button"
+               aria-label="Sone 2 Besøkende — 15 kr per time dagtid"
+               data-zone="visitor"
+               data-title="Sone 2 — Besøkende"
+               data-regel="Åpen for alle besøkende"
+               data-pris="Kr 15,- / time (07–17)"
+               data-tid="Man–fre 07:00–17:00"
+               data-note="Øvrig tid: Gratis">
+              <rect x="160" y="200" width="140" height="40" fill="#facc15" fill-opacity="0.35" rx="3"/>
+              <text x="230" y="224" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#facc15" font-weight="bold">BESØKENDE</text>
+            </g>
+
+            <!-- Zone 2 — Visitors — right front -->
+            <g class="parking-zone" tabindex="0" role="button"
+               aria-label="Sone 2 Besøkende — 15 kr per time dagtid"
+               data-zone="visitor"
+               data-title="Sone 2 — Besøkende"
+               data-regel="Åpen for alle besøkende"
+               data-pris="Kr 15,- / time (07–17)"
+               data-tid="Man–fre 07:00–17:00"
+               data-note="Øvrig tid: Gratis">
+              <rect x="380" y="200" width="200" height="40" fill="#facc15" fill-opacity="0.35" rx="3"/>
+              <text x="480" y="224" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#facc15" font-weight="bold">BESØKENDE</text>
+            </g>
+
+            <!-- Zone 5 (Blue) — right area -->
+            <g class="parking-zone" tabindex="0" role="button"
+               aria-label="Sone 5 — 37 kr per time dagtid"
+               data-zone="sone5"
+               data-title="Sone 5 — Alle"
+               data-regel="Åpen for alle"
+               data-pris="Kr 37,- / time (07–17)"
+               data-tid="Man–fre 07:00–17:00"
+               data-note="Øvrig tid: Gratis">
+              <rect x="640" y="200" width="140" height="40" fill="#60a5fa" fill-opacity="0.35" rx="3"/>
+              <text x="710" y="224" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#60a5fa" font-weight="bold">SONE 5</text>
+            </g>
+
+            <!-- Zone 5 lower -->
+            <g class="parking-zone" tabindex="0" role="button"
+               aria-label="Sone 5 — 37 kr per time dagtid"
+               data-zone="sone5"
+               data-title="Sone 5 — Alle"
+               data-regel="Åpen for alle"
+               data-pris="Kr 37,- / time (07–17)"
+               data-tid="Man–fre 07:00–17:00"
+               data-note="Øvrig tid: Gratis">
+              <rect x="640" y="260" width="140" height="80" fill="#60a5fa" fill-opacity="0.3" rx="3"/>
+              <text x="710" y="304" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#60a5fa" font-weight="bold">SONE 5</text>
+            </g>
+
+            <!-- Tenant zone lower -->
+            <g class="parking-zone" tabindex="0" role="button"
+               aria-label="Sone 2 Leietakere — gratis parkering"
+               data-zone="tenant"
+               data-title="Sone 2 — Leietakere"
+               data-regel="Gratis for registrerte leietakere"
+               data-pris="Gratis"
+               data-tid="Alle tider"
+               data-note="Treningssenter-brukere: 2 timer gratis">
+              <rect x="120" y="260" width="240" height="80" fill="#4ade80" fill-opacity="0.3" rx="3"/>
+              <text x="240" y="303" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#4ade80" font-weight="bold">LEIETAKERE</text>
+            </g>
+
+            <!-- EV Charging spots -->
+            <g class="parking-zone" tabindex="0" role="button"
+               aria-label="EL-ladestasjoner"
+               data-zone="ev"
+               data-title="EL-ladestasjoner"
+               data-regel="Tilgjengelig for alle EL-biler"
+               data-pris="Se parkerings­priser"
+               data-tid="24 timer"
+               data-note="Ladekabel medbringes">
+              <rect x="20" y="200" width="90" height="40" fill="#34d399" fill-opacity="0.4" rx="3" stroke="#10b981" stroke-width="1.5"/>
+              <text x="65" y="218" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#34d399" font-weight="bold">⚡ EL-LADING</text>
+              <text x="65" y="230" text-anchor="middle" font-family="sans-serif" font-size="6.5" fill="#34d399">Tilgjengelig</text>
+            </g>
+
+            <!-- EV lower -->
+            <g class="parking-zone" tabindex="0" role="button"
+               aria-label="EL-ladestasjoner"
+               data-zone="ev"
+               data-title="EL-ladestasjoner"
+               data-regel="Tilgjengelig for alle EL-biler"
+               data-pris="Se parkerings­priser"
+               data-tid="24 timer"
+               data-note="Ladekabel medbringes">
+              <rect x="380" y="360" width="200" height="80" fill="#34d399" fill-opacity="0.35" rx="3" stroke="#10b981" stroke-width="1.5"/>
+              <text x="480" y="395" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#34d399" font-weight="bold">⚡ EL-LADING</text>
+              <text x="480" y="410" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#34d399">Ladestasjoner</text>
+            </g>
+
+            <!-- Parking symbols (P) -->
+            <text x="155" y="145" font-family="sans-serif" font-size="16" fill="#4ade80" opacity="0.6" font-weight="bold">P</text>
+            <text x="200" y="175" font-family="sans-serif" font-size="11" fill="#facc15" opacity="0.7" font-weight="bold">P</text>
+            <text x="420" y="175" font-family="sans-serif" font-size="11" fill="#facc15" opacity="0.7" font-weight="bold">P</text>
+            <text x="670" y="175" font-family="sans-serif" font-size="11" fill="#60a5fa" opacity="0.7" font-weight="bold">P</text>
+
+            <!-- Compass rose -->
+            <g transform="translate(758,440)">
+              <circle r="18" fill="#252b3b" stroke="#3a4055" stroke-width="1"/>
+              <text x="0" y="-6"  text-anchor="middle" font-family="sans-serif" font-size="7" fill="#6b7280">N</text>
+              <text x="0" y="10"  text-anchor="middle" font-family="sans-serif" font-size="7" fill="#6b7280">S</text>
+              <text x="-10" y="3" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#6b7280">V</text>
+              <text x="10"  y="3" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#6b7280">Ø</text>
+              <line x1="0" y1="-13" x2="0" y2="-5" stroke="#c8a96e" stroke-width="1.5"/>
+            </g>
+
+            <!-- Scale bar -->
+            <g transform="translate(20,460)">
+              <line x1="0" y1="0" x2="80" y2="0" stroke="#3a4055" stroke-width="1.5"/>
+              <line x1="0" y1="-4" x2="0" y2="4" stroke="#3a4055" stroke-width="1.5"/>
+              <line x1="80" y1="-4" x2="80" y2="4" stroke="#3a4055" stroke-width="1.5"/>
+              <text x="40" y="-6" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#6b7280">~100m</text>
+            </g>
+
+          </svg>
+
+          <!-- Tooltip -->
+          <div class="map-tooltip" id="map-tooltip" role="tooltip" aria-live="polite">
+            <div class="map-tooltip__title" id="tooltip-title">Sone</div>
+            <div class="map-tooltip__row">
+              <span>Regler</span>
+              <strong id="tooltip-regel">—</strong>
+            </div>
+            <div class="map-tooltip__row">
+              <span>Pris (dagtid)</span>
+              <strong id="tooltip-pris">—</strong>
+            </div>
+            <div class="map-tooltip__row">
+              <span>Tidsrom</span>
+              <strong id="tooltip-tid">—</strong>
+            </div>
+            <div class="map-tooltip__row">
+              <span>Merknad</span>
+              <strong id="tooltip-note">—</strong>
+            </div>
+          </div>
+
+        </div><!-- /.map-wrapper -->
+
+      </div>
+    </section>
+
+    <!-- =================================================================
+         3. ZONE INFO CARDS
+         ================================================================= -->
+    <section class="parking-section parking-section--charcoal" aria-labelledby="zones-heading">
+      <div class="parking-inner">
+
+        <div style="max-width:580px;margin-bottom:var(--space-xl)" class="fade-in">
+          <div class="section-kicker">Sonenivåer</div>
+          <h2 id="zones-heading" style="color:var(--color-white);font-size:clamp(1.8rem,3vw,2.4rem);margin-bottom:var(--space-sm)">
+            Parkeringsregler per sone
+          </h2>
+          <p style="color:var(--color-muted);line-height:1.7;font-size:0.95rem">
+            Velg riktig sone basert på ditt behov. Alle priser gjelder man–fre 07:00–17:00.
+            Utenfor disse tidene er parkering gratis i alle soner.
+          </p>
+        </div>
+
+        <div class="zone-cards fade-in" role="list" aria-label="Parkeringssoner">
+
+          <!-- Leietakere -->
+          <div class="zone-card zone-card--green" role="listitem">
+            <div class="zone-card__badge">
+              <i data-lucide="shield-check" aria-hidden="true" style="width:12px;height:12px"></i>
+              Sone 2
+            </div>
+            <div class="zone-card__name">Leietakere</div>
+            <div class="zone-card__users">
+              For registrerte leietakere og ansatte i Mustad Næringspark.
+              Krever gyldig registrering.
+            </div>
+            <div class="zone-card__price-block">
+              <div class="zone-card__price-row">
+                <span>Alle tider</span>
+                <div class="zone-card__price-amount">Gratis</div>
+              </div>
+            </div>
+            <div class="zone-card__note">
+              Ikke gyldig for studenter. Treningssenter-brukere har 2 timers gratis parkering.
+              Registrering kreves via vår portal.
+            </div>
+            <div class="ev-badge" style="margin-top:var(--space-md)">
+              <i data-lucide="zap" aria-hidden="true"></i>
+              EL-lading tilgjengelig
+            </div>
+          </div>
+
+          <!-- Besøkende -->
+          <div class="zone-card zone-card--yellow" role="listitem">
+            <div class="zone-card__badge">
+              <i data-lucide="users" aria-hidden="true" style="width:12px;height:12px"></i>
+              Sone 2
+            </div>
+            <div class="zone-card__name">Besøkende</div>
+            <div class="zone-card__users">
+              For besøkende, gjester og alle som ikke er faste leietakere.
+              Ingen registrering nødvendig.
+            </div>
+            <div class="zone-card__price-block">
+              <div class="zone-card__price-row">
+                <span>Man–fre 07:00–17:00</span>
+                <div class="zone-card__price-amount">Kr 15,-/t</div>
+              </div>
+              <div class="zone-card__price-row">
+                <span>Øvrig tid</span>
+                <div class="zone-card__price-amount">Gratis</div>
+              </div>
+            </div>
+            <div class="zone-card__note">
+              Betaling via Vipps, EasyPark eller faktura. Bruk skiltet
+              parkeringsID ved betaling.
+            </div>
+          </div>
+
+          <!-- Sone 5 -->
+          <div class="zone-card zone-card--blue" role="listitem">
+            <div class="zone-card__badge">
+              <i data-lucide="map-pin" aria-hidden="true" style="width:12px;height:12px"></i>
+              Sone 5
+            </div>
+            <div class="zone-card__name">Sone 5 — Alle</div>
+            <div class="zone-card__users">
+              Åpen for alle. Brukes primært av besøkende som ikke finner
+              plass i sone 2.
+            </div>
+            <div class="zone-card__price-block">
+              <div class="zone-card__price-row">
+                <span>Man–fre 07:00–17:00</span>
+                <div class="zone-card__price-amount">Kr 37,-/t</div>
+              </div>
+              <div class="zone-card__price-row">
+                <span>Øvrig tid</span>
+                <div class="zone-card__price-amount">Gratis</div>
+              </div>
+            </div>
+            <div class="zone-card__note">
+              Betaling via Vipps, EasyPark eller faktura.
+              Parkly-support: 70 30 99 88.
+            </div>
+          </div>
+
+        </div><!-- /.zone-cards -->
+
+        <!-- Støperiet callout -->
+        <div class="stoperiet-callout fade-in">
+          <i data-lucide="info" aria-hidden="true"></i>
+          <div class="stoperiet-callout__text">
+            <h4>Støperiet — egne parkeringsregler</h4>
+            <p>
+              Støperiet i Gjøvik sentrum har egne parkeringsforhold. For spesifikk informasjon
+              om parkering ved Støperiet, se
+              <a href="eiendom-stoperiet.html">Støperiets eiendomsside</a>
+              eller kontakt oss direkte.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =================================================================
+         4. PAYMENT METHODS
+         ================================================================= -->
+    <section class="parking-section parking-section--light" aria-labelledby="payment-heading">
+      <div class="parking-inner">
+
+        <div style="max-width:580px;margin-bottom:var(--space-xl)" class="fade-in">
+          <div class="section-kicker" style="color:var(--color-accent)">Betaling</div>
+          <h2 id="payment-heading" style="color:var(--color-text);font-size:clamp(1.8rem,3vw,2.4rem);margin-bottom:var(--space-sm)">
+            Fleksible betalingsmetoder
+          </h2>
+          <p style="color:#555;line-height:1.7;font-size:0.95rem">
+            Parkering i Mustad Næringspark administreres av Parkly og kan betales
+            via tre enkle metoder.
+          </p>
+        </div>
+
+        <div class="payment-methods fade-in" role="list" aria-label="Betalingsmetoder">
+
+          <div class="payment-card" role="listitem">
+            <div class="payment-card__icon" style="background:rgba(255,93,51,0.08)">
+              <i data-lucide="smartphone" aria-hidden="true"></i>
+            </div>
+            <div class="payment-card__name">Vipps</div>
+            <div class="payment-card__desc">
+              Betal enkelt og raskt med Vipps-appen. Scan QR-koden på parkeringsautomaten
+              eller bruk parkeringsID.
+            </div>
+          </div>
+
+          <div class="payment-card" role="listitem">
+            <div class="payment-card__icon" style="background:rgba(0,100,200,0.08)">
+              <i data-lucide="credit-card" aria-hidden="true"></i>
+            </div>
+            <div class="payment-card__name">EasyPark</div>
+            <div class="payment-card__desc">
+              Bruk EasyPark-appen for enkel digital betaling. Start og stopp parkering
+              direkte fra telefonen — betal kun for brukt tid.
+            </div>
+          </div>
+
+          <div class="payment-card" role="listitem">
+            <div class="payment-card__icon" style="background:rgba(200,169,110,0.1)">
+              <i data-lucide="file-text" aria-hidden="true"></i>
+            </div>
+            <div class="payment-card__name">Faktura</div>
+            <div class="payment-card__desc">
+              For bedriftskunder og leietakere kan parkering faktureres månedlig.
+              Ta kontakt med oss for å opprette faktura-avtale.
+            </div>
+          </div>
+
+        </div>
+
+        <div class="support-bar fade-in">
+          <span class="support-bar__label">Parkly Support</span>
+          <div class="support-bar__item">
+            <i data-lucide="phone" aria-hidden="true"></i>
+            <a href="tel:70309988">70 30 99 88</a>
+          </div>
+          <div class="support-bar__item">
+            <i data-lucide="mail" aria-hidden="true"></i>
+            <a href="mailto:support@parkly.no">support@parkly.no</a>
+          </div>
+          <div class="support-bar__item">
+            <i data-lucide="clock" aria-hidden="true"></i>
+            <span>Man–fre 08:00–16:00</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =================================================================
+         5. VISITOR REGISTRATION
+         ================================================================= -->
+    <section class="parking-section parking-section--dark" aria-labelledby="reg-heading">
+      <div class="parking-inner">
+
+        <div class="reg-form-wrapper fade-in">
+
+          <div class="reg-form__intro">
+            <div class="section-kicker">Besøksregistrering</div>
+            <h2 id="reg-heading">
+              Registrer besøkende
+            </h2>
+            <p>
+              Er du leietaker og forventer gjester? Registrer kjøretøynummeret til din
+              besøkende slik at de kan parkere kostnadsfritt i leietaker-sonen.
+            </p>
+            <p>
+              Registreringen er gyldig for den angitte datoen og varigheten. Feilregistrering
+              kan medføre parkeringsgebyr — dobbeltsjekk nummerskilt.
+            </p>
+
+            <div class="reg-form__steps" aria-label="Registreringsguide">
+              <div class="reg-step">
+                <div class="reg-step__num" aria-hidden="true">1</div>
+                <div class="reg-step__text">Fyll inn navn, nummerskilt, dato og varighet i skjemaet.</div>
+              </div>
+              <div class="reg-step">
+                <div class="reg-step__num" aria-hidden="true">2</div>
+                <div class="reg-step__text">Send inn skjemaet — registreringen behandles umiddelbart.</div>
+              </div>
+              <div class="reg-step">
+                <div class="reg-step__num" aria-hidden="true">3</div>
+                <div class="reg-step__text">Gjesten kan parkere fritt i leietaker-sone på registrert dato.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="reg-form__form" role="form" aria-labelledby="reg-heading">
+            <div class="reg-form__heading">Registrer besøkende kjøretøy</div>
+
+            <form data-validate novalidate>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="reg-name">Navn på besøkende</label>
+                  <input type="text" id="reg-name" name="navn"
+                         placeholder="Ola Nordmann"
+                         autocomplete="name"
+                         required />
+                </div>
+                <div class="form-group">
+                  <label for="reg-plate">Registreringsnummer</label>
+                  <input type="text" id="reg-plate" name="nummerskilt"
+                         placeholder="AB 12345"
+                         autocomplete="off"
+                         style="text-transform:uppercase"
+                         required />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="reg-date">Dato</label>
+                  <input type="date" id="reg-date" name="dato" required />
+                </div>
+                <div class="form-group">
+                  <label for="reg-duration">Varighet</label>
+                  <select id="reg-duration" name="varighet" required>
+                    <option value="">Velg varighet</option>
+                    <option value="2t">2 timer</option>
+                    <option value="4t">4 timer</option>
+                    <option value="hel">Hel dag</option>
+                    <option value="2d">2 dager</option>
+                    <option value="uke">1 uke</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="reg-company">Din bedrift / avdeling</label>
+                <input type="text" id="reg-company" name="bedrift"
+                       placeholder="Sweco, Statens vegvesen…"
+                       autocomplete="organization" />
+              </div>
+
+              <p class="form-disclaimer">
+                Dette er et estimat-skjema for prototypen. I produksjon vil registreringen
+                gå direkte til Parkly-systemet. Ta kontakt med resepsjonen for øyeblikkelig
+                hjelp.
+              </p>
+
+              <button type="submit" class="btn btn--accent" style="width:100%;justify-content:center">
+                Registrer besøkende
+                <i data-lucide="check-circle" aria-hidden="true"></i>
+              </button>
+
+            </form>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =================================================================
+         FOOTER CTA BAND
+         ================================================================= -->
+    <section class="cta-band" aria-labelledby="park-cta-heading">
+      <div class="cta-band__inner">
+        <div class="cta-band__content">
+          <h2 id="park-cta-heading" class="cta-band__title">
+            Spørsmål om parkering?
+          </h2>
+          <p class="cta-band__text">
+            Ta kontakt med oss eller Parkly-support direkte for rask hjelp
+            med registrering, faktura eller parkeringsbot.
+          </p>
+        </div>
+        <div class="cta-band__actions">
+          <a href="kontakt.html" class="btn btn--accent btn--lg">
+            Kontakt oss
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+          </a>
+          <a href="tel:70309988" class="btn btn--outline btn--lg">
+            Ring Parkly: 70 30 99 88
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================================
+       FOOTER
+       ===================================================================== -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer__inner">
+
+      <div class="footer__col footer__col--brand">
+        <a href="index.html" class="footer__logo" aria-label="Mustad Næringspark — til forsiden">
+          <div class="nav__logo-mark" style="width:32px;height:32px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 21h18M3 7v1m0 4v1m0 4v1M21 7v1m0 4v1m0 4v1M6 21V3l6 4 6-4v18"/>
+            </svg>
+          </div>
+          <span>Mustad Næringspark</span>
+        </a>
+        <p class="footer__tagline">
+          Vi forvalter og utvikler spennende eiendommer i og rundt Gjøvik.
+          Et levende og pulserende sted med et mangfold av bedrifter.
+        </p>
+        <div class="footer__social" aria-label="Sosiale medier">
+          <a href="#" class="footer__social-link" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </a>
+          <a href="#" class="footer__social-link" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer__col">
+        <h3 class="footer__heading">Hurtiglenker</h3>
+        <nav aria-label="Footer-navigasjon">
+          <ul class="footer__links">
+            <li><a href="eiendommer.html">Eiendommer</a></li>
+            <li><a href="ledige-lokaler.html">Ledige Lokaler</a></li>
+            <li><a href="fasiliteter.html">Fasiliteter</a></li>
+            <li><a href="parkering.html">Parkering</a></li>
+            <li><a href="om-oss.html">Om Oss</a></li>
+            <li><a href="nyheter.html">Nyheter</a></li>
+            <li><a href="kontakt.html">Kontakt</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="footer__col">
+        <h3 class="footer__heading">Kontakt oss</h3>
+        <address class="footer__contact">
+          <p>
+            <i data-lucide="map-pin" aria-hidden="true"></i>
+            Huntonstranda 28<br>2815 Gjøvik
+          </p>
+          <p>
+            <i data-lucide="mail" aria-hidden="true"></i>
+            <a href="mailto:post@mustadnaeringspark.no">post@mustadnaeringspark.no</a>
+          </p>
+          <p>
+            <i data-lucide="building-2" aria-hidden="true"></i>
+            Org.nr. 812 345 678
+          </p>
+        </address>
+      </div>
+
+    </div>
+
+    <div class="footer__bottom">
+      <p>&copy; 2025 Mustad Næringspark AS. Alle rettigheter forbeholdt.</p>
+      <p>
+        <a href="personvern.html">Personvern</a>
+        <span aria-hidden="true">·</span>
+        <a href="kontakt.html">Kontakt</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Lucide + Map tooltip + Form -->
+  <script src="script.js"></script>
+  <script>
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    /* --- SVG Map Tooltip ----------------------------------------------- */
+    (function () {
+      var tooltip    = document.getElementById('map-tooltip');
+      var ttTitle    = document.getElementById('tooltip-title');
+      var ttRegel    = document.getElementById('tooltip-regel');
+      var ttPris     = document.getElementById('tooltip-pris');
+      var ttTid      = document.getElementById('tooltip-tid');
+      var ttNote     = document.getElementById('tooltip-note');
+      var mapWrapper = document.querySelector('.map-wrapper');
+
+      if (!tooltip || !mapWrapper) return;
+
+      function showTooltip(zone, x, y) {
+        ttTitle.textContent = zone.dataset.title  || '';
+        ttRegel.textContent = zone.dataset.regel  || '—';
+        ttPris.textContent  = zone.dataset.pris   || '—';
+        ttTid.textContent   = zone.dataset.tid    || '—';
+        ttNote.textContent  = zone.dataset.note   || '—';
+
+        var wRect = mapWrapper.getBoundingClientRect();
+        var left  = x - wRect.left + 12;
+        var top   = y - wRect.top  + 12;
+
+        // Keep inside wrapper
+        var ttW = 240;
+        if (left + ttW > wRect.width - 12) left = x - wRect.left - ttW - 8;
+        if (top + 180 > wRect.height)      top  = y - wRect.top  - 180;
+
+        tooltip.style.left = left + 'px';
+        tooltip.style.top  = top  + 'px';
+        tooltip.classList.add('visible');
+      }
+
+      function hideTooltip() {
+        tooltip.classList.remove('visible');
+      }
+
+      document.querySelectorAll('.parking-zone').forEach(function (zone) {
+        zone.addEventListener('mousemove', function (e) { showTooltip(zone, e.clientX, e.clientY); });
+        zone.addEventListener('mouseleave', hideTooltip);
+        zone.addEventListener('focus',  function (e) {
+          var rect = zone.getBoundingClientRect();
+          showTooltip(zone, rect.left + rect.width / 2, rect.top);
+        });
+        zone.addEventListener('blur', hideTooltip);
+        zone.addEventListener('click', function (e) {
+          if (tooltip.classList.contains('visible') &&
+              tooltip.getAttribute('data-active') === zone.dataset.zone) {
+            hideTooltip();
+            tooltip.removeAttribute('data-active');
+          } else {
+            showTooltip(zone, e.clientX, e.clientY);
+            tooltip.setAttribute('data-active', zone.dataset.zone);
+          }
+        });
+      });
+
+      // Close on outside click
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest('.parking-zone') && !e.target.closest('.map-tooltip')) {
+          hideTooltip();
+          tooltip.removeAttribute('data-active');
+        }
+      });
+    }());
+
+    /* --- Visitor registration form ------------------------------------- */
+    (function () {
+      var form = document.querySelector('form[data-validate]');
+      if (!form) return;
+
+      // Set min date to today
+      var dateInput = document.getElementById('reg-date');
+      if (dateInput) {
+        dateInput.min = new Date().toISOString().split('T')[0];
+      }
+
+      // Uppercase plate number
+      var plateInput = document.getElementById('reg-plate');
+      if (plateInput) {
+        plateInput.addEventListener('input', function () {
+          var pos = this.selectionStart;
+          this.value = this.value.toUpperCase();
+          this.setSelectionRange(pos, pos);
+        });
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var valid = true;
+
+        form.querySelectorAll('[required]').forEach(function (field) {
+          field.style.borderColor = '';
+          if (!field.value.trim()) {
+            field.style.borderColor = '#f87171';
+            valid = false;
+          }
+        });
+
+        if (!valid) return;
+
+        // Simulate success
+        var btn = form.querySelector('[type="submit"]');
+        var originalText = btn.innerHTML;
+        btn.innerHTML = 'Registrering sendt! <i data-lucide="check" aria-hidden="true"></i>';
+        btn.disabled = true;
+        btn.style.background = '#4ade80';
+        btn.style.borderColor = '#4ade80';
+        btn.style.color = '#0f1117';
+
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
+        setTimeout(function () {
+          btn.innerHTML = originalText;
+          btn.disabled  = false;
+          btn.style.background = '';
+          btn.style.borderColor = '';
+          btn.style.color = '';
+          form.reset();
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        }, 3500);
+      });
+    }());
+  </script>
+
+</body>
+</html>

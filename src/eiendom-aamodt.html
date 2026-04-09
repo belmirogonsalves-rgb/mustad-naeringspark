@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Åmodt — Lager og næringslokaler i Hunndalen, Gjøvik. Praktiske lokaler med gode logistikkforhold nær riksvei 4. Del av Mustad Næringspark." />
+  <title>Åmodt — Lager og næringslokaler | Mustad Næringspark</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Questrial&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+</head>
+<body>
+
+  <!-- Skip to content -->
+  <a class="skip-link" href="#main">Hopp til innhold</a>
+
+  <!-- =====================================================================
+       NAVIGATION
+       ===================================================================== -->
+  <nav class="nav" role="navigation" aria-label="Hovednavigasjon">
+    <div class="nav__inner">
+
+      <a href="index.html" class="nav__logo" aria-label="Mustad Næringspark — til forsiden">
+        <div class="nav__logo-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 21h18M3 7v1m0 4v1m0 4v1M21 7v1m0 4v1m0 4v1M6 21V3l6 4 6-4v18"/>
+          </svg>
+        </div>
+        <div class="nav__logo-text">
+          Mustad Næringspark
+          <span>Gjøvik · Innlandet</span>
+        </div>
+      </a>
+
+      <div class="nav__links" role="list">
+        <a href="eiendommer.html"     class="nav__link active" role="listitem">Eiendommer</a>
+        <a href="fasiliteter.html"    class="nav__link" role="listitem">Fasiliteter</a>
+        <a href="parkering.html"      class="nav__link" role="listitem">Parkering</a>
+        <a href="om-oss.html"         class="nav__link" role="listitem">Om Oss</a>
+        <a href="kontakt.html"        class="nav__link" role="listitem">Kontakt</a>
+        <a href="ledige-lokaler.html" class="nav__cta"  role="listitem">
+          Ledige Lokaler
+          <i data-lucide="arrow-right" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <button class="nav__hamburger" aria-label="Åpne meny" aria-expanded="false"
+              aria-controls="mobile-drawer">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="nav__drawer" id="mobile-drawer" role="dialog" aria-label="Mobilmeny">
+      <a href="eiendommer.html"     class="nav__link">Eiendommer</a>
+      <a href="fasiliteter.html"    class="nav__link">Fasiliteter</a>
+      <a href="parkering.html"      class="nav__link">Parkering</a>
+      <a href="om-oss.html"         class="nav__link">Om Oss</a>
+      <a href="kontakt.html"        class="nav__link">Kontakt</a>
+      <a href="ledige-lokaler.html" class="nav__cta">Ledige Lokaler →</a>
+    </div>
+  </nav>
+
+  <main id="main">
+
+    <!-- =================================================================
+         1. PAGE HERO
+         ================================================================= -->
+    <section class="page-hero" aria-label="Åmodt — lager og næringslokaler">
+      <div class="page-hero__bg"
+           style="background-image: url('https://images.unsplash.com/photo-1553413077-190dd305871c?w=1920&auto=format&fit=crop&q=80');"
+           role="img" aria-label="Åmodt lager og næringslokale i Hunndalen"></div>
+
+      <div class="page-hero__content">
+
+        <!-- Breadcrumb -->
+        <nav aria-label="Brødsmulesti" style="margin-bottom: var(--space-xl);">
+          <ol style="display:flex; align-items:center; gap:var(--space-sm); list-style:none; flex-wrap:wrap; padding:0; margin:0;">
+            <li>
+              <a href="index.html"
+                 style="font-size:var(--text-sm); color:rgba(255,255,255,0.45); text-decoration:none; transition:color var(--transition-base);"
+                 onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='rgba(255,255,255,0.45)'">
+                Hjem
+              </a>
+            </li>
+            <li aria-hidden="true" style="color:rgba(255,255,255,0.25); font-size:var(--text-sm);">/</li>
+            <li>
+              <a href="eiendommer.html"
+                 style="font-size:var(--text-sm); color:rgba(255,255,255,0.45); text-decoration:none; transition:color var(--transition-base);"
+                 onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='rgba(255,255,255,0.45)'">
+                Eiendommer
+              </a>
+            </li>
+            <li aria-hidden="true" style="color:rgba(255,255,255,0.25); font-size:var(--text-sm);">/</li>
+            <li aria-current="page" style="font-size:var(--text-sm); color:var(--color-accent);">Åmodt</li>
+          </ol>
+        </nav>
+
+        <span class="badge badge--aamodt" style="margin-bottom:var(--space-lg); display:inline-flex;">Lager &amp; næring</span>
+        <h1 style="margin-bottom:var(--space-md);">Åmodt</h1>
+        <p class="lead" style="max-width:48ch;">Praktiske lokaler med gode logistikkforhold</p>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         2. STATS BAR
+         ================================================================= -->
+    <section class="stats-bar" aria-label="Nøkkeltall for Åmodt">
+      <div class="container">
+        <div class="stats-bar__grid">
+
+          <div class="stats-bar__item fade-in">
+            <span class="stats-bar__number">4 000 kvm</span>
+            <span class="stats-bar__label">Totalt areal</span>
+          </div>
+
+          <div class="stats-bar__item fade-in fade-in-delay-1">
+            <span class="stats-bar__number">2</span>
+            <span class="stats-bar__label">Etasjer</span>
+          </div>
+
+          <div class="stats-bar__item fade-in fade-in-delay-2">
+            <span class="stats-bar__number">1</span>
+            <span class="stats-bar__label">Ledig enhet</span>
+          </div>
+
+          <div class="stats-bar__item fade-in fade-in-delay-3">
+            <span class="stats-bar__number">Nær RV4</span>
+            <span class="stats-bar__label">Beliggenhet</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         3. ABOUT — SPLIT SECTION
+         ================================================================= -->
+    <section class="section bg-light" aria-labelledby="about-heading">
+      <div class="container">
+        <div class="split">
+
+          <!-- Text left -->
+          <div class="slide-in-left">
+            <span class="overline" style="display:block; margin-bottom:var(--space-sm);">Om Åmodt</span>
+            <h2 id="about-heading" style="margin-bottom:var(--space-xl);">Lager og næring<br>i Hunndalen</h2>
+            <p style="color:var(--color-muted); margin-bottom:var(--space-md);">
+              Åmodt er Mustad Næringsparks lager- og næringseiendom i Hunndalen, sentralt plassert nær riksvei 4. Beliggenheten gjør bygget ideelt for virksomheter med logistikk- og distribusjonsbehov.
+            </p>
+            <p style="color:var(--color-muted); margin-bottom:var(--space-2xl);">
+              Lokalene tilbyr romslige, oppvarmede lagerflater med god takhøyde og praktisk lasteareal. Her finner du ro til å drive virksomheten din effektivt, med all nødvendig infrastruktur på plass.
+            </p>
+            <div style="display:flex; gap:var(--space-md); flex-wrap:wrap;">
+              <a href="ledige-lokaler.html" class="btn btn--primary">
+                Se ledige lokaler
+                <i data-lucide="arrow-right" aria-hidden="true"></i>
+              </a>
+              <a href="kontakt.html" class="btn btn--ghost">Ta kontakt</a>
+            </div>
+          </div>
+
+          <!-- Image right -->
+          <div class="split__visual slide-in-right">
+            <img
+              src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&auto=format&fit=crop&q=80"
+              alt="Innvendig lagerplass i Åmodt"
+              loading="lazy"
+              width="800" height="533"
+              style="width:100%; height:100%; object-fit:cover; border-radius:var(--radius-lg); box-shadow:var(--shadow-lg);"
+            />
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         4. PHOTO GALLERY
+         ================================================================= -->
+    <section class="section bg-white" aria-labelledby="gallery-heading">
+      <div class="container">
+
+        <header class="section-header fade-in">
+          <span class="overline">Bildegalleri</span>
+          <h2 id="gallery-heading">Se lokalene</h2>
+          <p class="lead">Et innblikk i Åmodts arealer, fasiliteter og omgivelser.</p>
+        </header>
+
+        <div class="gallery" role="list" aria-label="Bildegalleri for Åmodt">
+
+          <!-- Large item -->
+          <div class="gallery__item gallery__item--large fade-in"
+               data-src="https://images.unsplash.com/photo-1553413077-190dd305871c?w=1200&auto=format&fit=crop&q=80"
+               data-alt="Åmodt lager og næringslokale"
+               tabindex="0"
+               role="button"
+               aria-label="Forstørr: Åmodt lager og næringslokale">
+            <img
+              src="https://images.unsplash.com/photo-1553413077-190dd305871c?w=1200&auto=format&fit=crop&q=80"
+              alt="Åmodt lager og næringslokale"
+              loading="lazy"
+              width="1200" height="800"
+            />
+            <div class="gallery__overlay" aria-hidden="true">
+              <i data-lucide="zoom-in"></i>
+            </div>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="gallery__item fade-in fade-in-delay-1"
+               data-src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&auto=format&fit=crop&q=80"
+               data-alt="Innvendig lagerplass"
+               tabindex="0"
+               role="button"
+               aria-label="Forstørr: Innvendig lagerplass">
+            <img
+              src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&auto=format&fit=crop&q=80"
+              alt="Innvendig lagerplass"
+              loading="lazy"
+              width="600" height="400"
+            />
+            <div class="gallery__overlay" aria-hidden="true">
+              <i data-lucide="zoom-in"></i>
+            </div>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="gallery__item fade-in fade-in-delay-2"
+               data-src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&auto=format&fit=crop&q=80"
+               data-alt="Adkomst og lasteareal"
+               tabindex="0"
+               role="button"
+               aria-label="Forstørr: Adkomst og lasteareal">
+            <img
+              src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&auto=format&fit=crop&q=80"
+              alt="Adkomst og lasteareal"
+              loading="lazy"
+              width="600" height="400"
+            />
+            <div class="gallery__overlay" aria-hidden="true">
+              <i data-lucide="zoom-in"></i>
+            </div>
+          </div>
+
+          <!-- Item 4 -->
+          <div class="gallery__item fade-in fade-in-delay-1"
+               data-src="https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?w=600&auto=format&fit=crop&q=80"
+               data-alt="Parkeringsplass og uteområde"
+               tabindex="0"
+               role="button"
+               aria-label="Forstørr: Parkeringsplass og uteområde">
+            <img
+              src="https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?w=600&auto=format&fit=crop&q=80"
+              alt="Parkeringsplass og uteområde"
+              loading="lazy"
+              width="600" height="400"
+            />
+            <div class="gallery__overlay" aria-hidden="true">
+              <i data-lucide="zoom-in"></i>
+            </div>
+          </div>
+
+          <!-- Item 5 -->
+          <div class="gallery__item fade-in fade-in-delay-2"
+               data-src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=600&auto=format&fit=crop&q=80"
+               data-alt="Lagerflate med god takhøyde"
+               tabindex="0"
+               role="button"
+               aria-label="Forstørr: Lagerflate med god takhøyde">
+            <img
+              src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=600&auto=format&fit=crop&q=80"
+              alt="Lagerflate med god takhøyde"
+              loading="lazy"
+              width="600" height="400"
+            />
+            <div class="gallery__overlay" aria-hidden="true">
+              <i data-lucide="zoom-in"></i>
+            </div>
+          </div>
+
+          <!-- Item 6 -->
+          <div class="gallery__item fade-in fade-in-delay-3"
+               data-src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600&auto=format&fit=crop&q=80"
+               data-alt="Utearealer"
+               tabindex="0"
+               role="button"
+               aria-label="Forstørr: Utearealer">
+            <img
+              src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600&auto=format&fit=crop&q=80"
+              alt="Utearealer"
+              loading="lazy"
+              width="600" height="400"
+            />
+            <div class="gallery__overlay" aria-hidden="true">
+              <i data-lucide="zoom-in"></i>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         5. AMENITIES
+         ================================================================= -->
+    <section class="section bg-light" aria-labelledby="amenities-heading">
+      <div class="container">
+
+        <header class="section-header section-header--center fade-in">
+          <span class="overline">Fasiliteter</span>
+          <h2 id="amenities-heading">Hva er inkludert</h2>
+          <p class="lead">Alt du trenger for en effektiv og problemfri hverdag i Hunndalen.</p>
+        </header>
+
+        <div class="grid-4" data-stagger>
+
+          <div class="amenity-tile fade-in">
+            <div class="amenity-tile__icon" aria-hidden="true">
+              <i data-lucide="car"></i>
+            </div>
+            <h3 class="amenity-tile__title">Parkering</h3>
+            <p class="amenity-tile__desc">Rikelig med parkering på tomten for ansatte og besøkende.</p>
+          </div>
+
+          <div class="amenity-tile fade-in fade-in-delay-1">
+            <div class="amenity-tile__icon" aria-hidden="true">
+              <i data-lucide="truck"></i>
+            </div>
+            <h3 class="amenity-tile__title">Lasteareal</h3>
+            <p class="amenity-tile__desc">Praktisk inn- og utkjøring med dedikert lasteareal for varelevering.</p>
+          </div>
+
+          <div class="amenity-tile fade-in fade-in-delay-2">
+            <div class="amenity-tile__icon" aria-hidden="true">
+              <i data-lucide="thermometer"></i>
+            </div>
+            <h3 class="amenity-tile__title">Oppvarmet</h3>
+            <p class="amenity-tile__desc">Oppvarmede lagerflater som holder temperaturen gjennom hele året.</p>
+          </div>
+
+          <div class="amenity-tile fade-in fade-in-delay-3">
+            <div class="amenity-tile__icon" aria-hidden="true">
+              <i data-lucide="map-pin"></i>
+            </div>
+            <h3 class="amenity-tile__title">God adkomst</h3>
+            <p class="amenity-tile__desc">Nær riksvei 4 i Hunndalen — enkelt tilgjengelig for transport og leveranser.</p>
+          </div>
+
+          <div class="amenity-tile fade-in">
+            <div class="amenity-tile__icon" aria-hidden="true">
+              <i data-lucide="droplets"></i>
+            </div>
+            <h3 class="amenity-tile__title">Toalettfasiliteter</h3>
+            <p class="amenity-tile__desc">Toaletter tilgjengelig i bygget for ansatte og besøkende.</p>
+          </div>
+
+          <div class="amenity-tile fade-in fade-in-delay-1">
+            <div class="amenity-tile__icon" aria-hidden="true">
+              <i data-lucide="shield"></i>
+            </div>
+            <h3 class="amenity-tile__title">Sikkerhet</h3>
+            <p class="amenity-tile__desc">Innhegnet tomt med adgangskontroll for trygg lagring av varer og utstyr.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         6. AVAILABLE SPACES
+         ================================================================= -->
+    <section class="section bg-white" aria-labelledby="spaces-heading">
+      <div class="container">
+
+        <header class="section-header fade-in" style="display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:var(--space-md);">
+          <div>
+            <span class="overline">Ledige lokaler</span>
+            <h2 id="spaces-heading">Tilgjengelig i Åmodt</h2>
+          </div>
+          <a href="ledige-lokaler.html" class="btn btn--ghost" style="flex-shrink:0;">
+            Se alle ledige lokaler
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+          </a>
+        </header>
+
+        <div style="max-width:520px;" class="fade-in">
+          <div class="listing-card">
+            <div class="listing-card__image-wrap">
+              <img
+                src="https://images.unsplash.com/photo-1553413077-190dd305871c?w=640&auto=format&fit=crop&q=80"
+                alt="Oppvarmet lagerlokale i Hunndalen"
+                class="listing-card__image"
+                loading="lazy"
+                width="640" height="360"
+              />
+            </div>
+            <div class="listing-card__body">
+              <div style="margin-bottom:var(--space-sm);">
+                <span class="badge badge--aamodt">Åmodt</span>
+              </div>
+              <h3 class="listing-card__headline">Oppvarmet lagerlokale i Hunndalen</h3>
+              <div class="listing-card__specs">
+                <span class="tag">
+                  <i data-lucide="maximize-2" aria-hidden="true"></i>
+                  155 kvm
+                </span>
+                <span class="tag">
+                  <i data-lucide="calendar" aria-hidden="true"></i>
+                  Ledig omgående
+                </span>
+                <span class="tag">
+                  <i data-lucide="thermometer" aria-hidden="true"></i>
+                  Oppvarmet
+                </span>
+                <span class="tag">
+                  <i data-lucide="map-pin" aria-hidden="true"></i>
+                  Nær RV4
+                </span>
+              </div>
+              <ul class="listing-card__bullets" aria-label="Fasiliteter">
+                <li class="listing-card__bullet">
+                  <i data-lucide="check" aria-hidden="true"></i>
+                  Oppvarmede lagerflater med god takhøyde
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check" aria-hidden="true"></i>
+                  Praktisk lasteareal med enkel adkomst
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check" aria-hidden="true"></i>
+                  Rikelig med parkering på innhegnet tomt
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check" aria-hidden="true"></i>
+                  Sentralt plassert nær riksvei 4, Hunndalen
+                </li>
+              </ul>
+              <div class="listing-card__actions">
+                <a href="kontakt.html" class="btn btn--primary btn--sm">
+                  Ta kontakt
+                  <i data-lucide="arrow-right" aria-hidden="true"></i>
+                </a>
+                <a href="ledige-lokaler.html" class="btn btn--ghost btn--sm">Se alle lokaler</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =================================================================
+         7. CTA BAND
+         ================================================================= -->
+    <section class="cta-band" aria-labelledby="cta-heading">
+      <div class="container">
+        <span class="overline" style="display:block; margin-bottom:var(--space-md);">Interessert?</span>
+        <h2 id="cta-heading">Ta kontakt med oss i dag</h2>
+        <p style="max-width:48ch;">
+          Vi hjelper deg å finne riktig lokale for din virksomhet. Svar raskt, uforpliktende og alltid personlig.
+        </p>
+        <div class="cta-band__actions">
+          <a href="kontakt.html" class="btn btn--primary btn--lg">
+            Ta kontakt
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+          </a>
+          <a href="ledige-lokaler.html" class="btn btn--secondary btn--lg">Se ledige lokaler</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================================
+       FOOTER
+       ===================================================================== -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__grid">
+
+        <!-- Brand col -->
+        <div class="footer__brand">
+          <div class="footer__logo">
+            <div class="footer__logo-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 21h18M3 7v1m0 4v1m0 4v1M21 7v1m0 4v1m0 4v1M6 21V3l6 4 6-4v18"/>
+              </svg>
+            </div>
+            <div class="footer__logo-text">
+              Mustad Næringspark
+              <span>Gjøvik · Innlandet</span>
+            </div>
+          </div>
+          <p class="footer__tagline">
+            Vi forvalter og utvikler spennende eiendommer i og rundt Gjøvik.
+          </p>
+          <div class="footer__social" role="list" aria-label="Sosiale medier">
+            <a href="#" class="footer__social-link" role="listitem" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+            </a>
+            <a href="#" class="footer__social-link" role="listitem" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+            <a href="#" class="footer__social-link" role="listitem" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick links col -->
+        <nav aria-label="Hurtiglenker">
+          <p class="footer__col-title">Navigasjon</p>
+          <ul class="footer__links">
+            <li><a href="eiendommer.html"      class="footer__link">Eiendommer</a></li>
+            <li><a href="ledige-lokaler.html"  class="footer__link">Ledige Lokaler</a></li>
+            <li><a href="fasiliteter.html"     class="footer__link">Fasiliteter</a></li>
+            <li><a href="parkering.html"       class="footer__link">Parkering</a></li>
+            <li><a href="om-oss.html"          class="footer__link">Om Oss</a></li>
+            <li><a href="nyheter.html"         class="footer__link">Nyheter</a></li>
+            <li><a href="kontakt.html"         class="footer__link">Kontakt</a></li>
+          </ul>
+        </nav>
+
+        <!-- Contact col -->
+        <div>
+          <p class="footer__col-title">Kontakt</p>
+          <address style="font-style:normal;">
+            <div class="footer__contact-item">
+              <i data-lucide="map-pin" aria-hidden="true"></i>
+              <p>Huntonstranda 28<br>2815 Gjøvik</p>
+            </div>
+            <div class="footer__contact-item">
+              <i data-lucide="phone" aria-hidden="true"></i>
+              <p><a href="tel:+4761000000">+47 61 00 00 00</a></p>
+            </div>
+            <div class="footer__contact-item">
+              <i data-lucide="mail" aria-hidden="true"></i>
+              <p><a href="mailto:post@mustadnaeringspark.no">post@mustadnaeringspark.no</a></p>
+            </div>
+            <div class="footer__contact-item">
+              <i data-lucide="clock" aria-hidden="true"></i>
+              <p>Man–fre: 08:00–16:00</p>
+            </div>
+          </address>
+        </div>
+
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="footer__bottom">
+        <p class="footer__legal">
+          © 2026 Mustad Næringspark AS · Org.nr. 812 345 678
+        </p>
+        <p class="footer__legal">
+          <a href="#">Personvern</a> · <a href="#">Informasjonskapsler</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =====================================================================
+       LIGHTBOX
+       ===================================================================== -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Bildevisning" aria-hidden="true">
+    <button class="lightbox__close" id="lightbox-close" aria-label="Lukk bildevisning">
+      <i data-lucide="x" aria-hidden="true"></i>
+    </button>
+    <div class="lightbox__inner">
+      <img class="lightbox__img" id="lightbox-img" src="" alt="" />
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>if (typeof lucide !== 'undefined') lucide.createIcons();</script>
+</body>
+</html>

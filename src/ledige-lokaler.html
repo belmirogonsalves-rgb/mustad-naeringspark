@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Ledige lokaler i Mustad Næringspark, Gjøvik. Kontor, cellekontor og lagerlokaler i moderne bygg med fullt utstyrte fellesfasiliteter." />
+  <title>Ledige Lokaler — Mustad Næringspark</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Questrial&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+
+  <style>
+    /* ── Page-specific overrides ── */
+    .listings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-xl);
+      align-items: start;
+    }
+
+    /* Listing card — richer variant for this page */
+    .listing-card {
+      border: 1px solid var(--color-border-light);
+      transition: transform var(--transition-base),
+                  box-shadow var(--transition-base),
+                  border-color var(--transition-base);
+    }
+
+    .listing-card:hover { border-color: var(--color-accent-dim); }
+
+    .listing-card.is-selected {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 2px var(--color-accent-dim), var(--shadow-card-hover);
+    }
+
+    /* No-results state */
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: var(--space-4xl) var(--space-xl);
+      color: var(--color-muted);
+    }
+
+    .no-results svg {
+      width: 48px; height: 48px;
+      color: var(--color-light-2);
+      margin-inline: auto;
+      margin-bottom: var(--space-lg);
+    }
+
+    /* Estimator trigger — fixed bottom-left so it doesn't clash with compare panel (bottom-right) */
+    .estimator-trigger {
+      bottom: var(--space-xl);
+      right: var(--space-xl);
+    }
+
+    /* Compare panel needs a little bottom padding when visible */
+    body.compare-open .estimator-trigger {
+      bottom: calc(80px + var(--space-xl));
+    }
+
+    @media (max-width: 768px) {
+      .listings-grid { grid-template-columns: 1fr; }
+      .estimator-trigger span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Hopp til innhold</a>
+
+  <!-- =====================================================================
+       NAVIGATION
+       ===================================================================== -->
+  <nav class="nav" role="navigation" aria-label="Hovednavigasjon">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo" aria-label="Mustad Næringspark — til forsiden">
+        <div class="nav__logo-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 21h18M3 7v1m0 4v1m0 4v1M21 7v1m0 4v1m0 4v1M6 21V3l6 4 6-4v18"/>
+          </svg>
+        </div>
+        <div class="nav__logo-text">
+          Mustad Næringspark
+          <span>Gjøvik · Innlandet</span>
+        </div>
+      </a>
+
+      <div class="nav__links">
+        <a href="eiendommer.html"     class="nav__link">Eiendommer</a>
+        <a href="fasiliteter.html"    class="nav__link">Fasiliteter</a>
+        <a href="parkering.html"      class="nav__link">Parkering</a>
+        <a href="om-oss.html"         class="nav__link">Om Oss</a>
+        <a href="kontakt.html"        class="nav__link">Kontakt</a>
+        <a href="ledige-lokaler.html" class="nav__cta active">
+          Ledige Lokaler
+          <i data-lucide="arrow-right" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <button class="nav__hamburger" aria-label="Åpne meny" aria-expanded="false"
+              aria-controls="mobile-drawer">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div class="nav__drawer" id="mobile-drawer" role="dialog" aria-label="Mobilmeny">
+      <a href="eiendommer.html"     class="nav__link">Eiendommer</a>
+      <a href="fasiliteter.html"    class="nav__link">Fasiliteter</a>
+      <a href="parkering.html"      class="nav__link">Parkering</a>
+      <a href="om-oss.html"         class="nav__link">Om Oss</a>
+      <a href="kontakt.html"        class="nav__link">Kontakt</a>
+      <a href="ledige-lokaler.html" class="nav__cta">Ledige Lokaler →</a>
+    </div>
+  </nav>
+
+  <!-- =====================================================================
+       FILTER BAR — sticky below nav
+       ===================================================================== -->
+  <div class="filter-bar" role="search" aria-label="Filtrer lokaler">
+    <div class="filter-bar__inner">
+      <span class="filter-bar__label">
+        <i data-lucide="sliders-horizontal" aria-hidden="true"
+           style="width:16px;height:16px;display:inline-block;vertical-align:middle;margin-right:6px;"></i>
+        Filter:
+      </span>
+      <div class="filter-bar__controls">
+
+        <label for="filter-building" class="sr-only">Filtrer etter bygg</label>
+        <select id="filter-building" class="filter-select" aria-label="Bygg">
+          <option value="all">Alle bygg</option>
+          <option value="mustad">Mustad Næringspark</option>
+          <option value="bright">Bright House</option>
+          <option value="aamodt">Åmodt</option>
+          <option value="stoperiet">Støperiet</option>
+        </select>
+
+        <label for="filter-size" class="sr-only">Filtrer etter størrelse</label>
+        <select id="filter-size" class="filter-select" aria-label="Størrelse">
+          <option value="all">Alle størrelser</option>
+          <option value="under-100">Under 100 kvm</option>
+          <option value="100-300">100–300 kvm</option>
+          <option value="300-600">300–600 kvm</option>
+          <option value="600-plus">600+ kvm</option>
+        </select>
+
+        <label for="filter-available" class="sr-only">Filtrer etter tilgjengelighet</label>
+        <select id="filter-available" class="filter-select" aria-label="Tilgjengelig fra">
+          <option value="all">Alle datoer</option>
+          <option value="now">Nå</option>
+          <option value="3-months">Innen 3 mnd</option>
+          <option value="6-months">Innen 6 mnd</option>
+        </select>
+
+      </div>
+      <span class="filter-count" aria-live="polite" aria-atomic="true">Viser alle 8 lokaler</span>
+    </div>
+  </div>
+
+  <main id="main">
+
+    <!-- =================================================================
+         PAGE HERO — compact
+         ================================================================= -->
+    <section class="page-hero" aria-label="Ledige lokaler">
+      <div class="page-hero__bg"
+           style="background-image:url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&auto=format&fit=crop&q=80');"
+           role="img" aria-label="Moderne kontorlandskap"></div>
+      <div class="page-hero__content">
+        <span class="overline">Mustad Næringspark · Gjøvik</span>
+        <h1 style="margin-bottom:var(--space-md);">Ledige lokaler</h1>
+        <p class="lead">Kontor, cellekontor og lagerlokaler — med full tilgang til parkens fellesfasiliteter inkludert i leien.</p>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         LISTINGS GRID
+         ================================================================= -->
+    <section class="section bg-light" aria-labelledby="listings-heading">
+      <div class="container">
+        <h2 id="listings-heading" class="sr-only">Tilgjengelige lokaler</h2>
+
+        <div class="listings-grid" id="listings-grid">
+
+          <!-- ──────────────────────────────────────────────────────────
+               LISTING 1: 600 kvm — Mustad Næringspark
+               data-available uses ISO date for filter JS
+               ─────────────────────────────────────────────────────── -->
+          <article class="listing-card fade-in"
+                   data-building="mustad"
+                   data-size="600"
+                   data-available="2026-07-01">
+            <div class="listing-card__image-wrap">
+              <img
+                src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&auto=format&fit=crop&q=80"
+                alt="600 kvm åpent kontorlandskap i Mustad Næringspark"
+                class="listing-card__image"
+                loading="lazy" width="800" height="450"
+              />
+            </div>
+            <div class="listing-card__body">
+              <div class="card__meta">
+                <span class="badge badge--mustad">Mustad Næringspark</span>
+                <span class="badge" style="background:rgba(200,169,110,0.15);color:var(--color-accent);">Ledig juli 2026</span>
+              </div>
+              <h3 class="listing-card__headline">Trivelig og funksjonelle kontorlokaler</h3>
+              <div class="listing-card__specs">
+                <span class="tag"><i data-lucide="maximize-2" aria-hidden="true"></i> 600 kvm</span>
+                <span class="tag"><i data-lucide="calendar" aria-hidden="true"></i> Juli 2026</span>
+                <span class="tag"><i data-lucide="layout-grid" aria-hidden="true"></i> Åpent landskap</span>
+                <span class="tag"><i data-lucide="building-2" aria-hidden="true"></i> 1. etasje</span>
+              </div>
+              <ul class="listing-card__bullets" aria-label="Inkluderte fasiliteter">
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Moderne kontorlokaler med gjennomtenkt planløsning
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Eget kjøkken og tilgang til to kantiner
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Gratis møteromsbooking og treningssenter
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Gratis parkering for alle ansatte
+                </li>
+              </ul>
+              <div class="listing-card__actions">
+                <a href="kontakt.html?lokale=600kvm-mustad" class="btn btn--primary btn--sm">
+                  <i data-lucide="mail" aria-hidden="true"></i> Ta kontakt
+                </a>
+                <button class="btn btn--ghost btn--sm" data-compare="listing-1"
+                        aria-pressed="false" aria-label="Legg til i sammenligning">
+                  <i data-lucide="bar-chart-2" aria-hidden="true"></i> Sammenlign
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- ──────────────────────────────────────────────────────────
+               LISTING 2: 239 kvm — Bright House
+               ─────────────────────────────────────────────────────── -->
+          <article class="listing-card fade-in fade-in-delay-1"
+                   data-building="bright"
+                   data-size="239"
+                   data-available="2026-01-01">
+            <div class="listing-card__image-wrap">
+              <img
+                src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop&q=80"
+                alt="239 kvm moderne kontorlokale i Bright House"
+                class="listing-card__image"
+                loading="lazy" width="800" height="450"
+              />
+            </div>
+            <div class="listing-card__body">
+              <div class="card__meta">
+                <span class="badge badge--bright">Bright House</span>
+                <span class="badge" style="background:rgba(61,153,112,0.15);color:#3d9970;">Ledig nå</span>
+              </div>
+              <h3 class="listing-card__headline">Lyse, moderne lokaler med fleksibel planløsning</h3>
+              <div class="listing-card__specs">
+                <span class="tag"><i data-lucide="maximize-2" aria-hidden="true"></i> 239 kvm</span>
+                <span class="tag"><i data-lucide="layers" aria-hidden="true"></i> + 37 kvm fellesareal</span>
+                <span class="tag"><i data-lucide="calendar" aria-hidden="true"></i> Jan. 2026</span>
+                <span class="tag"><i data-lucide="sun" aria-hidden="true"></i> Lyse lokaler</span>
+              </div>
+              <ul class="listing-card__bullets" aria-label="Inkluderte fasiliteter">
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Fleksibel planløsning tilpasset din virksomhet
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Eget kjøkken og tilgang til to kantiner
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Ubegrenset møteromsbooking inkludert
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Treningssenter og gratis parkering
+                </li>
+              </ul>
+              <div class="listing-card__actions">
+                <a href="kontakt.html?lokale=239kvm-bright" class="btn btn--primary btn--sm">
+                  <i data-lucide="mail" aria-hidden="true"></i> Ta kontakt
+                </a>
+                <button class="btn btn--ghost btn--sm" data-compare="listing-2"
+                        aria-pressed="false" aria-label="Legg til i sammenligning">
+                  <i data-lucide="bar-chart-2" aria-hidden="true"></i> Sammenlign
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- ──────────────────────────────────────────────────────────
+               LISTING 3: 130 kvm — Bright House (4 cellekontorer)
+               ─────────────────────────────────────────────────────── -->
+          <article class="listing-card fade-in"
+                   data-building="bright"
+                   data-size="130"
+                   data-available="2026-03-01">
+            <div class="listing-card__image-wrap">
+              <img
+                src="https://images.unsplash.com/photo-1568992687947-868a62a9f521?w=800&auto=format&fit=crop&q=80"
+                alt="130 kvm med 4 cellekontorer og møterom i Bright House"
+                class="listing-card__image"
+                loading="lazy" width="800" height="450"
+              />
+            </div>
+            <div class="listing-card__body">
+              <div class="card__meta">
+                <span class="badge badge--bright">Bright House</span>
+                <span class="badge" style="background:rgba(200,169,110,0.15);color:var(--color-accent);">Ledig vår 2026</span>
+              </div>
+              <h3 class="listing-card__headline">4 cellekontorer med stort møterom</h3>
+              <div class="listing-card__specs">
+                <span class="tag"><i data-lucide="maximize-2" aria-hidden="true"></i> 130 kvm</span>
+                <span class="tag"><i data-lucide="grid-2x2" aria-hidden="true"></i> 4 cellekontorer</span>
+                <span class="tag"><i data-lucide="calendar" aria-hidden="true"></i> Vår 2026</span>
+              </div>
+              <ul class="listing-card__bullets" aria-label="Inkluderte fasiliteter">
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Fire avlukkede cellekontorer
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Stort møterom med god kapasitet
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Eget kjøkken og kantinetilgang
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Treningssenter og gratis parkering
+                </li>
+              </ul>
+              <div class="listing-card__actions">
+                <a href="kontakt.html?lokale=130kvm-bright" class="btn btn--primary btn--sm">
+                  <i data-lucide="mail" aria-hidden="true"></i> Ta kontakt
+                </a>
+                <button class="btn btn--ghost btn--sm" data-compare="listing-3"
+                        aria-pressed="false" aria-label="Legg til i sammenligning">
+                  <i data-lucide="bar-chart-2" aria-hidden="true"></i> Sammenlign
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- ──────────────────────────────────────────────────────────
+               LISTING 4: 316 kvm — Bright House Plan U
+               ─────────────────────────────────────────────────────── -->
+          <article class="listing-card fade-in fade-in-delay-1"
+                   data-building="bright"
+                   data-size="316"
+                   data-available="2025-10-01">
+            <div class="listing-card__image-wrap">
+              <img
+                src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&auto=format&fit=crop&q=80"
+                alt="316 kvm fleksibelt kontorlandskap i Bright House Plan U"
+                class="listing-card__image"
+                loading="lazy" width="800" height="450"
+              />
+            </div>
+            <div class="listing-card__body">
+              <div class="card__meta">
+                <span class="badge badge--bright">Bright House</span>
+                <span class="badge" style="background:rgba(61,153,112,0.15);color:#3d9970;">Ledig nå</span>
+              </div>
+              <h3 class="listing-card__headline">Funksjonelle og fleksible lokaler — Plan U</h3>
+              <div class="listing-card__specs">
+                <span class="tag"><i data-lucide="maximize-2" aria-hidden="true"></i> 316 kvm</span>
+                <span class="tag"><i data-lucide="building" aria-hidden="true"></i> Plan U</span>
+                <span class="tag"><i data-lucide="zap" aria-hidden="true"></i> Ledig omgående</span>
+              </div>
+              <ul class="listing-card__bullets" aria-label="Inkluderte fasiliteter">
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Funksjonelt og fleksibelt kontorlandskap
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Attraktivt næringsmiljø med gode naboer
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Fullt tilgang til parkens alle fasiliteter
+                </li>
+              </ul>
+              <div class="listing-card__actions">
+                <a href="kontakt.html?lokale=316kvm-bright" class="btn btn--primary btn--sm">
+                  <i data-lucide="mail" aria-hidden="true"></i> Ta kontakt
+                </a>
+                <button class="btn btn--ghost btn--sm" data-compare="listing-4"
+                        aria-pressed="false" aria-label="Legg til i sammenligning">
+                  <i data-lucide="bar-chart-2" aria-hidden="true"></i> Sammenlign
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- ──────────────────────────────────────────────────────────
+               LISTING 5: Cellekontor — Bright House (enkeltkontor)
+               ─────────────────────────────────────────────────────── -->
+          <article class="listing-card fade-in"
+                   data-building="bright"
+                   data-size="25"
+                   data-available="nå">
+            <div class="listing-card__image-wrap">
+              <img
+                src="https://images.unsplash.com/photo-1497366412874-3415097a27e7?w=800&auto=format&fit=crop&q=80"
+                alt="Privat cellekontor med 24/7 tilgang i Bright House"
+                class="listing-card__image"
+                loading="lazy" width="800" height="450"
+              />
+            </div>
+            <div class="listing-card__body">
+              <div class="card__meta">
+                <span class="badge badge--bright">Bright House</span>
+                <span class="badge" style="background:rgba(61,153,112,0.15);color:#3d9970;">Ledig nå</span>
+              </div>
+              <h3 class="listing-card__headline">Privat cellekontor med 24/7-tilgang</h3>
+              <div class="listing-card__specs">
+                <span class="tag"><i data-lucide="user" aria-hidden="true"></i> 1–2 pers.</span>
+                <span class="tag tag--accent"><i data-lucide="tag" aria-hidden="true"></i> Fra kr 6 400,–/mnd</span>
+                <span class="tag"><i data-lucide="key" aria-hidden="true"></i> Eget låsbart kontor</span>
+              </div>
+              <ul class="listing-card__bullets" aria-label="Inkluderte fasiliteter">
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Eget låsbart kontor med personlig nøkkel
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Låsbart skap og ubegrenset møteromsbooking
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Kantine, treningssenter og gratis parkering
+                </li>
+              </ul>
+              <div class="listing-card__actions">
+                <a href="kontakt.html?lokale=cellekontor-bright" class="btn btn--primary btn--sm">
+                  <i data-lucide="mail" aria-hidden="true"></i> Ta kontakt
+                </a>
+                <button class="btn btn--ghost btn--sm" data-compare="listing-5"
+                        aria-pressed="false" aria-label="Legg til i sammenligning">
+                  <i data-lucide="bar-chart-2" aria-hidden="true"></i> Sammenlign
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- ──────────────────────────────────────────────────────────
+               LISTING 6: ~200 kvm Lagerlokale — Mustad Næringspark
+               ─────────────────────────────────────────────────────── -->
+          <article class="listing-card fade-in fade-in-delay-1"
+                   data-building="mustad"
+                   data-size="200"
+                   data-available="nå">
+            <div class="listing-card__image-wrap">
+              <img
+                src="https://images.unsplash.com/photo-1553413077-190dd305871c?w=800&auto=format&fit=crop&q=80"
+                alt="Attraktivt lagerlokale i Mustad Næringspark"
+                class="listing-card__image"
+                loading="lazy" width="800" height="450"
+              />
+            </div>
+            <div class="listing-card__body">
+              <div class="card__meta">
+                <span class="badge badge--mustad">Mustad Næringspark</span>
+                <span class="badge" style="background:rgba(61,153,112,0.15);color:#3d9970;">Ledig omgående</span>
+              </div>
+              <h3 class="listing-card__headline">Attraktivt lagerlokale — sentralt i parken</h3>
+              <div class="listing-card__specs">
+                <span class="tag"><i data-lucide="maximize-2" aria-hidden="true"></i> Ca. 200 kvm</span>
+                <span class="tag"><i data-lucide="zap" aria-hidden="true"></i> Ledig nå</span>
+                <span class="tag"><i data-lucide="truck" aria-hidden="true"></i> Logistikk</span>
+              </div>
+              <ul class="listing-card__bullets" aria-label="Lokaler og adkomst">
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Sentralt plassert i næringsparken
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Godt egnet for virksomheter med logistikkbehov
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Enkel adkomst og gode kjøreforhold
+                </li>
+              </ul>
+              <div class="listing-card__actions">
+                <a href="kontakt.html?lokale=lager-mustad" class="btn btn--primary btn--sm">
+                  <i data-lucide="mail" aria-hidden="true"></i> Ta kontakt
+                </a>
+                <button class="btn btn--ghost btn--sm" data-compare="listing-6"
+                        aria-pressed="false" aria-label="Legg til i sammenligning">
+                  <i data-lucide="bar-chart-2" aria-hidden="true"></i> Sammenlign
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- ──────────────────────────────────────────────────────────
+               LISTING 7: 155 kvm Lagerlokale — Åmodt, Hunndalen
+               ─────────────────────────────────────────────────────── -->
+          <article class="listing-card fade-in"
+                   data-building="aamodt"
+                   data-size="155"
+                   data-available="nå">
+            <div class="listing-card__image-wrap">
+              <img
+                src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&auto=format&fit=crop&q=80"
+                alt="155 kvm oppvarmet lagerlokale i Åmodt, Hunndalen"
+                class="listing-card__image"
+                loading="lazy" width="800" height="450"
+              />
+            </div>
+            <div class="listing-card__body">
+              <div class="card__meta">
+                <span class="badge badge--aamodt">Åmodt</span>
+                <span class="badge" style="background:rgba(61,153,112,0.15);color:#3d9970;">Ledig omgående</span>
+              </div>
+              <h3 class="listing-card__headline">Oppvarmet lagerlokale i Hunndalen</h3>
+              <div class="listing-card__specs">
+                <span class="tag"><i data-lucide="maximize-2" aria-hidden="true"></i> 155 kvm</span>
+                <span class="tag"><i data-lucide="thermometer" aria-hidden="true"></i> Oppvarmet</span>
+                <span class="tag"><i data-lucide="map-pin" aria-hidden="true"></i> Nær RV4</span>
+              </div>
+              <ul class="listing-card__bullets" aria-label="Lokaler og adkomst">
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Praktisk og oppvarmet lagerlokale
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Sentralt i Hunndalen, nær riksvei 4
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Gode logistikk- og adkomstforhold
+                </li>
+              </ul>
+              <div class="listing-card__actions">
+                <a href="kontakt.html?lokale=155kvm-aamodt" class="btn btn--primary btn--sm">
+                  <i data-lucide="mail" aria-hidden="true"></i> Ta kontakt
+                </a>
+                <button class="btn btn--ghost btn--sm" data-compare="listing-7"
+                        aria-pressed="false" aria-label="Legg til i sammenligning">
+                  <i data-lucide="bar-chart-2" aria-hidden="true"></i> Sammenlign
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- ──────────────────────────────────────────────────────────
+               LISTING 8: 1 800 kvm — Støperiet, Gjøvik sentrum
+               ─────────────────────────────────────────────────────── -->
+          <article class="listing-card fade-in fade-in-delay-1"
+                   data-building="stoperiet"
+                   data-size="1800"
+                   data-available="nå">
+            <div class="listing-card__image-wrap">
+              <img
+                src="https://images.unsplash.com/photo-1571624436279-b272aff752b5?w=800&auto=format&fit=crop&q=80"
+                alt="1 800 kvm over to etasjer i Støperiet, Gjøvik sentrum"
+                class="listing-card__image"
+                loading="lazy" width="800" height="450"
+              />
+            </div>
+            <div class="listing-card__body">
+              <div class="card__meta">
+                <span class="badge badge--stoperiet">Støperiet</span>
+                <span class="badge" style="background:rgba(61,153,112,0.15);color:#3d9970;">Ledig omgående</span>
+              </div>
+              <h3 class="listing-card__headline">Stort lokale over to etasjer — Gjøvik sentrum</h3>
+              <div class="listing-card__specs">
+                <span class="tag"><i data-lucide="maximize-2" aria-hidden="true"></i> Ca. 1 800 kvm</span>
+                <span class="tag"><i data-lucide="layers" aria-hidden="true"></i> 2 etasjer</span>
+                <span class="tag"><i data-lucide="map-pin" aria-hidden="true"></i> Gjøvik sentrum</span>
+                <span class="tag"><i data-lucide="arrow-up" aria-hidden="true"></i> Heis</span>
+              </div>
+              <ul class="listing-card__bullets" aria-label="Byggets fasiliteter">
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Ca. 1 800 kvm fordelt over to plan med heis
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Fjernvarme og miljøvennlig drift
+                </li>
+                <li class="listing-card__bullet">
+                  <i data-lucide="check-circle" aria-hidden="true"></i>
+                  Gangavstand til kollektivtransport og Gjøvik Gård
+                </li>
+              </ul>
+              <div class="listing-card__actions">
+                <a href="kontakt.html?lokale=1800kvm-stoperiet" class="btn btn--primary btn--sm">
+                  <i data-lucide="mail" aria-hidden="true"></i> Ta kontakt
+                </a>
+                <button class="btn btn--ghost btn--sm" data-compare="listing-8"
+                        aria-pressed="false" aria-label="Legg til i sammenligning">
+                  <i data-lucide="bar-chart-2" aria-hidden="true"></i> Sammenlign
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- No-results message (hidden by default, shown via JS) -->
+          <div class="no-results" id="no-results" style="display:none;" role="status" aria-live="polite">
+            <i data-lucide="search-x" aria-hidden="true"></i>
+            <h3 style="color:var(--color-text); margin-bottom:var(--space-sm);">Ingen lokaler funnet</h3>
+            <p>Prøv å endre filtervalgene, eller <a href="kontakt.html" style="color:var(--color-accent);">ta kontakt</a> — vi kan ha noe på vei.</p>
+          </div>
+
+        </div><!-- /listings-grid -->
+
+        <!-- CTA -->
+        <div style="text-align:center; margin-top:var(--space-3xl);" class="fade-in">
+          <p style="color:var(--color-muted); margin-bottom:var(--space-lg); margin-inline:auto;">
+            Finner du ikke det du leter etter? Vi kan hjelpe deg å finne eller bygge det rette lokalet.
+          </p>
+          <a href="kontakt.html" class="btn btn--dark btn--lg">
+            <i data-lucide="phone" aria-hidden="true"></i>
+            Snakk med oss
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =================================================================
+         SOCIAL PROOF STRIP
+         ================================================================= -->
+    <section class="section--sm" style="background:var(--color-charcoal); border-top:1px solid var(--color-border);"
+             aria-label="Leietakerhistorier">
+      <div class="container">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:var(--space-xl);">
+          <div style="max-width:540px;">
+            <span class="overline" style="margin-bottom:var(--space-sm); display:block;">Leietakerhistorier</span>
+            <blockquote style="font-family:var(--font-heading); font-size:clamp(1rem,1.5vw,1.25rem);
+                         color:var(--color-white); font-style:italic; line-height:1.55; margin-bottom:var(--space-md);">
+              "God beliggenhet var avgjørende for oss. Mustad Næringspark kombinerer tilgjengelighet med funksjonelle, moderne lokaler."
+            </blockquote>
+            <cite style="font-style:normal; font-size:var(--text-sm); color:var(--color-accent);
+                         letter-spacing:0.08em; text-transform:uppercase;">
+              — Sykehuspartner HF
+            </cite>
+          </div>
+          <a href="om-oss.html#leietakere" class="btn btn--secondary">
+            Les flere historier
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         FOOTER CTA
+         ================================================================= -->
+    <section class="cta-band" aria-labelledby="cta-heading">
+      <div class="container">
+        <span class="overline" style="display:block; margin-bottom:var(--space-md);">Klar for neste steg?</span>
+        <h2 id="cta-heading">Ser du etter nye lokaler?</h2>
+        <p style="max-width:50ch;">La oss finne det perfekte stedet for din virksomhet. Vi svarer raskt.</p>
+        <div class="cta-band__actions">
+          <a href="kontakt.html" class="btn btn--primary btn--lg">
+            <i data-lucide="mail" aria-hidden="true"></i> Ta kontakt
+          </a>
+          <a href="eiendom-bygg-for-deg.html" class="btn btn--secondary btn--lg">
+            Vi bygger for deg
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================================
+       FOOTER
+       ===================================================================== -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <div class="footer__logo">
+            <div class="footer__logo-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 21h18M3 7v1m0 4v1m0 4v1M21 7v1m0 4v1m0 4v1M6 21V3l6 4 6-4v18"/>
+              </svg>
+            </div>
+            <div class="footer__logo-text">
+              Mustad Næringspark
+              <span>Gjøvik · Innlandet</span>
+            </div>
+          </div>
+          <p class="footer__tagline">Vi forvalter og utvikler spennende eiendommer i og rundt Gjøvik.</p>
+          <div class="footer__social">
+            <a href="#" class="footer__social-link" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+            <a href="#" class="footer__social-link" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+          </div>
+        </div>
+        <nav aria-label="Hurtiglenker">
+          <p class="footer__col-title">Navigasjon</p>
+          <ul class="footer__links">
+            <li><a href="eiendommer.html"     class="footer__link">Eiendommer</a></li>
+            <li><a href="ledige-lokaler.html" class="footer__link">Ledige Lokaler</a></li>
+            <li><a href="fasiliteter.html"    class="footer__link">Fasiliteter</a></li>
+            <li><a href="parkering.html"      class="footer__link">Parkering</a></li>
+            <li><a href="om-oss.html"         class="footer__link">Om Oss</a></li>
+            <li><a href="nyheter.html"        class="footer__link">Nyheter</a></li>
+            <li><a href="kontakt.html"        class="footer__link">Kontakt</a></li>
+          </ul>
+        </nav>
+        <div>
+          <p class="footer__col-title">Kontakt</p>
+          <address style="font-style:normal;">
+            <div class="footer__contact-item">
+              <i data-lucide="map-pin" aria-hidden="true"></i>
+              <p>Huntonstranda 28<br>2815 Gjøvik</p>
+            </div>
+            <div class="footer__contact-item">
+              <i data-lucide="phone" aria-hidden="true"></i>
+              <p><a href="tel:+4761000000">+47 61 00 00 00</a></p>
+            </div>
+            <div class="footer__contact-item">
+              <i data-lucide="mail" aria-hidden="true"></i>
+              <p><a href="mailto:post@mustadnaeringspark.no">post@mustadnaeringspark.no</a></p>
+            </div>
+          </address>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p class="footer__legal">© 2026 Mustad Næringspark AS · Org.nr. 812 345 678</p>
+        <p class="footer__legal"><a href="#">Personvern</a> · <a href="#">Informasjonskapsler</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =====================================================================
+       COMPARE PANEL — slides up when ≥2 listings selected
+       ===================================================================== -->
+  <div class="compare-panel" role="complementary" aria-label="Sammenligning" aria-hidden="true"
+       id="compare-panel">
+    <div class="compare-panel__inner">
+      <span class="compare-panel__title">
+        <i data-lucide="bar-chart-2" aria-hidden="true"
+           style="width:16px;height:16px;display:inline-block;vertical-align:middle;margin-right:6px;"></i>
+        Sammenlign
+      </span>
+      <div class="compare-panel__items" role="list" aria-label="Valgte lokaler"></div>
+      <div class="compare-panel__actions">
+        <button class="btn btn--secondary btn--sm compare-panel__reset" aria-label="Nullstill sammenligning">
+          Nullstill
+        </button>
+        <a href="kontakt.html" class="btn btn--primary btn--sm">
+          Ta kontakt
+          <i data-lucide="arrow-right" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       COST ESTIMATOR TRIGGER
+       ===================================================================== -->
+  <button class="estimator-trigger" aria-label="Beregn ditt behov"
+          data-modal-open="estimator">
+    <i data-lucide="calculator" aria-hidden="true"></i>
+    <span>Beregn ditt behov</span>
+  </button>
+
+  <!-- =====================================================================
+       COST ESTIMATOR MODAL
+       ===================================================================== -->
+  <div class="modal-overlay" data-modal="estimator" role="dialog"
+       aria-modal="true" aria-labelledby="estimator-title" aria-hidden="true">
+    <div class="modal">
+      <button class="modal__close" aria-label="Lukk kalkulator">
+        <i data-lucide="x" aria-hidden="true"></i>
+      </button>
+
+      <h2 class="modal__title" id="estimator-title">Beregn ditt behov</h2>
+      <p class="modal__subtitle">
+        Oppgi antall ansatte — vi estimerer anbefalt areal og omtrentlig månedskostnad.
+      </p>
+
+      <div class="form-group">
+        <label class="form-label" for="estimator-employees">Antall ansatte</label>
+        <input
+          type="number"
+          id="estimator-employees"
+          class="form-input"
+          min="1"
+          max="500"
+          placeholder="F.eks. 10"
+          inputmode="numeric"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="estimator__result" aria-live="polite" aria-atomic="true">
+        <div class="estimator__result-row">
+          <span class="estimator__result-label">Anbefalt areal</span>
+          <span class="estimator__result-value" id="estimator-sqm">—</span>
+        </div>
+        <div class="estimator__result-row">
+          <span class="estimator__result-label">Estimert månedskostnad</span>
+          <span class="estimator__result-value" id="estimator-cost">—</span>
+        </div>
+        <div class="estimator__result-row">
+          <span class="estimator__result-label">Beregningsgrunnlag</span>
+          <span class="estimator__result-value" style="font-size:var(--text-sm); color:var(--color-muted);">
+            12 kvm / pers · kr 1 500 / kvm / år
+          </span>
+        </div>
+      </div>
+
+      <p class="estimator__disclaimer">
+        Dette er et estimat basert på bransjestandarder.
+        Ta kontakt for eksakt prissetting tilpasset dine behov.
+      </p>
+
+      <div style="margin-top:var(--space-xl);">
+        <a href="kontakt.html" class="btn btn--primary" style="width:100%; justify-content:center;">
+          <i data-lucide="mail" aria-hidden="true"></i>
+          Ta kontakt for et tilbud
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
+  <script>
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    // Sync compare panel aria-hidden with visible class
+    (function() {
+      const panel = document.getElementById('compare-panel');
+      if (!panel) return;
+      const mo = new MutationObserver(() => {
+        const isVisible = panel.classList.contains('visible');
+        panel.setAttribute('aria-hidden', String(!isVisible));
+        document.body.classList.toggle('compare-open', isVisible);
+      });
+      mo.observe(panel, { attributes: true, attributeFilter: ['class'] });
+    })();
+
+    // Sync estimator modal aria-hidden
+    (function() {
+      const overlay = document.querySelector('.modal-overlay[data-modal="estimator"]');
+      if (!overlay) return;
+      const mo = new MutationObserver(() => {
+        overlay.setAttribute('aria-hidden', String(!overlay.classList.contains('open')));
+      });
+      mo.observe(overlay, { attributes: true, attributeFilter: ['class'] });
+    })();
+
+    // Show no-results message when all cards are hidden
+    (function() {
+      const grid    = document.getElementById('listings-grid');
+      const noRes   = document.getElementById('no-results');
+      if (!grid || !noRes) return;
+
+      const mo = new MutationObserver(() => {
+        const anyVisible = [...grid.querySelectorAll('.listing-card')]
+          .some(c => c.style.display !== 'none');
+        noRes.style.display = anyVisible ? 'none' : 'block';
+      });
+
+      mo.observe(grid, { subtree: true, attributes: true, attributeFilter: ['style'] });
+    })();
+  </script>
+
+</body>
+</html>
