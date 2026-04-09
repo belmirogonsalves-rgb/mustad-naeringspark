@@ -367,6 +367,13 @@ p.full-width { max-width: none; }
   color: var(--color-dark);
 }
 
+.nav__logo-img {
+  height: 44px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
 .nav__logo-text {
   font-family: var(--font-heading);
   font-weight: 700;
@@ -533,6 +540,14 @@ p.full-width { max-width: none; }
   display: flex;
   align-items: center;
   gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.footer__logo-img {
+  height: 48px;
+  width: auto;
+  display: block;
+  object-fit: contain;
   margin-bottom: var(--space-lg);
 }
 
