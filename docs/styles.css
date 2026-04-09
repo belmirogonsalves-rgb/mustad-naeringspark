@@ -1252,6 +1252,14 @@ p.full-width { max-width: none; }
 
 .hero h1 .accent { color: var(--color-accent); }
 
+.hero__subtitle {
+  font-size: clamp(var(--text-md), 1.5vw, var(--text-lg));
+  color: rgba(255,255,255,0.85);
+  line-height: 1.7;
+  max-width: 54ch;
+  margin-bottom: var(--space-xl);
+}
+
 .hero__lead {
   font-size: clamp(var(--text-md), 1.5vw, var(--text-lg));
   color: rgba(255,255,255,0.70);
